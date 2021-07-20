@@ -78,7 +78,7 @@ int main (){
     EdgeWeightedGraph eg(10);
     eg.addEdge(Edge{0,1,7}).addEdge(Edge{0,2,5});
     eg.print(std::cout);
-
+ 
 
 
 }
