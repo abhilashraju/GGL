@@ -372,6 +372,7 @@ struct MatrixGraph
     }
     MatrixGraph& printContent(auto& os){
         m.print(os);
+        return *this;
     }
     MatrixGraph& print(auto& os){
         AdjList::print(m,os);

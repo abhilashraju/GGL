@@ -74,11 +74,5 @@ int main (){
     });
     printparents(vertexParents,CGVertex{0,2},CGVertex{0,0},[&](auto& v){return cg.to_string(v);});
     cg.printContent(std::cout);
-
-    EdgeWeightedGraph eg(10);
-    eg.addEdge(Edge{0,1,7}).addEdge(Edge{0,2,5});
-    eg.print(std::cout);
-
-
-
+    return 0;
 }
