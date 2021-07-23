@@ -1,5 +1,6 @@
 #include "union_find.hpp"
 #include <iostream>
+using namespace GGL;
 int main()
 {
     Union_find uf(10);

@@ -1,5 +1,6 @@
 #include "graphalgorithms.hpp"
 #include "graph.hpp"
+using namespace GGL;
 int main()
 {
     auto run=[](auto& g){

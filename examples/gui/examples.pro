@@ -13,12 +13,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-#SOURCES =../console/graphs.cpp\
-#        priorityqueue.cpp\
-#        trie.cpp\
-#        union_find.cpp\
-#        mst.cpp
-SOURCES +=main.cpp \
+SOURCES =\
+#         ../console/graphs.cpp\
+#        ../console/priorityqueue.cpp\
+#        ../console/trie.cpp\
+#        ../console/union_find.cpp\
+#        ../console/mst.cpp\
+         main.cpp \
 
 
 SOURCES +=rasterwindow.cpp

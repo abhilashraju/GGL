@@ -3,7 +3,7 @@
 #include "rasterwindow.h"
 #include <random>
 #include <cmath>
-
+using namespace GGL;
 class GraphUi : public RasterWindow
 {
     constexpr static int noofcols=10;

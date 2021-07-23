@@ -1,5 +1,5 @@
 #include "trie.hpp"
-
+using namespace GGL;
 int main (){
     Trie myTrie;
     myTrie.insert("hello","john");

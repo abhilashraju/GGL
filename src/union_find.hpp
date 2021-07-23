@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-
+namespace GGL {
 template<typename VertexType=int>
 struct Union_find
 {
@@ -17,15 +17,15 @@ struct Union_find
         initialise(nov);
     }
     Union_find(const std::initializer_list<VertexType>& vertices){
-       initialise(vertices);
+        initialise(vertices);
     }
     void initialise(int nov){
         std::generate_n(std::back_inserter(roots),nov,[i=0]()mutable{return NODE{i++,1};});
     }
     void initialise(const auto& vertices){
         for(auto& v:vertices){
-              roots[v]=NODE{v,1};
-         };
+            roots[v]=NODE{v,1};
+        };
     }
     void push_back(const VertexType& v){
         push_back(roots,v);
@@ -43,8 +43,8 @@ struct Union_find
     }
 
     Union_find& add(const VertexType& v1, const VertexType& v2){
-         auto& v1root=root(v1);
-         auto& v2root=root(v2);
+        auto& v1root=root(v1);
+        auto& v2root=root(v2);
         if(v1root != v2root){
             if(v1root.second > v2root.second){
                 v1root.second+=v2root.second;
@@ -63,3 +63,5 @@ struct Union_find
         return roots.size();
     }
 };
+
+}

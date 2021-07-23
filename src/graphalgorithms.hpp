@@ -5,6 +5,9 @@
 #include <deque>
 #include <map>
 #include <cmath>
+#include "priorityqueue.hpp"
+#include "union_find.hpp"
+namespace GGL {
 struct DFS{
 
     void dfs(auto& g ,auto& visited ,auto v,auto& child_handler,auto& visithandler){
@@ -12,13 +15,13 @@ struct DFS{
             visited.push_back(v);
             visithandler(v);
             for(auto& c:g.adj_list(v)){
-               dfs(g,visited,c,visithandler);
-               child_handler(v,c);
+                dfs(g,visited,c,visithandler);
+                child_handler(v,c);
             }
         }
     }
     void operator()(auto& g ,auto v,auto& child_handler,auto& visithandler){
-         using VertexType=typename std::remove_reference_t<decltype(g)>::VertexType;
+        using VertexType=typename std::remove_reference_t<decltype(g)>::VertexType;
         std::vector<VertexType> visited;
         dfs(g,visited,v,child_handler,visithandler);
     }
@@ -127,12 +130,11 @@ struct Connected_Cmponents
             compid++;
             v=next_non_visited(map);
         }
-     }
+    }
 };
 
 
-#include "priorityqueue.hpp"
-#include "union_find.hpp"
+
 struct m_s_t_kru{
     auto make_uf(auto& g,int){
         using  Edge=typename std::remove_reference_t<decltype(g)>::value_type;
@@ -144,7 +146,7 @@ struct m_s_t_kru{
         using VertexType=typename Edge::VertexType;
         Union_find<VertexType> uf;
         std::transform(std::begin(g),std::end(g),std::back_inserter(uf),[](auto& v){
-           return v.first;
+            return v.first;
         });
         return uf;
     }
@@ -162,9 +164,9 @@ struct m_s_t_kru{
         while(pq.size()&& totaledges < g.size()){
             auto e =pq.take();
             if(!uf.connected(e.either(),e.other(e.either()))){
-                  uf.add(e.either(),e.other(e.either()));
-                  on_add_handler(e);
-                  totaledges++;
+                uf.add(e.either(),e.other(e.either()));
+                on_add_handler(e);
+                totaledges++;
             }
         }
 
@@ -193,10 +195,10 @@ struct m_s_t_pri
         PriorityQueue<Edge> pq;
         auto visited=make_visited(g,VertexType{});
         auto visit=[&](const auto& v){
-          visited[v]=true;
-          for(auto& edge:g.adj_list(v)){
-              pq.insert(edge);
-          }
+            visited[v]=true;
+            for(auto& edge:g.adj_list(v)){
+                pq.insert(edge);
+            }
         };
         const auto& first =g.first();
         visit(first.either());
@@ -218,6 +220,8 @@ struct m_s_t_pri
 inline auto m_s_t(auto Algo,auto& g,auto on_add_handler){
     return Algo(g,std::move(on_add_handler));
 }
+}
+
 
 
 #endif // GRAPHALGORITHMS_HPP

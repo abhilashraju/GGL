@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include "graphalgorithms.hpp"
 #include <iostream>
+using namespace GGL;
 auto& operator<<(auto& os,const std::pair<int,int>& e){
     os<<"{ "<<e.first<<", "<<e.second<<" } ";
     return os;

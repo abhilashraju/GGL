@@ -3,7 +3,7 @@
 #include "rasterwindow.h"
 #include <random>
 #include <cmath>
-
+using namespace GGL;
 class MetrixGraphsUI : public RasterWindow
 {
     constexpr static int noofcols=25;

@@ -8,6 +8,7 @@
 #include <deque>
 #include <iostream>
 #include <numeric>
+namespace GGL {
 template <typename Key, typename Value>
 struct Flatmap
 {
@@ -73,12 +74,12 @@ struct Trie
                 currentNode=((*currentNode)[k]).get();
             }
             else{
-              ((*currentNode)[k])=std::make_unique<TrieNode>(TrieNode{{},Value{},k});
-              currentNode=((*currentNode)[k]).get();
+                ((*currentNode)[k])=std::make_unique<TrieNode>(TrieNode{{},Value{},k});
+                currentNode=((*currentNode)[k]).get();
             }
             currentkey=currentkey.substr(1);
             if(currentkey.empty()){
-                    currentNode->value=value;
+                currentNode->value=value;
             }
         }
     }
@@ -95,26 +96,26 @@ struct Trie
             queue.pop_front();
         }
     }
-     std::vector<Key> get_path_list(TrieNode* node){
+    std::vector<Key> get_path_list(TrieNode* node){
         std::vector<Key> keys;
         if(node){
             auto key = node->key;
             if(node->children.size()){
                 std::accumulate(begin(node->children),end(node->children),std::back_inserter(keys),[&](auto& iter, auto& v){
-                   auto c= v.second.get();
-                   auto clist =get_path_list(c);
+                    auto c= v.second.get();
+                    auto clist =get_path_list(c);
 
-                   std::vector<Key> ckeys;
-                   if(isValid(node->value)){
-                       ckeys.emplace_back(Key(1,key));
-                   }
-                   std::transform(begin(clist),end(clist),std::back_inserter(ckeys),[&](auto& cv){
-                       return key+cv;
-                   });
-                   for(auto& ck:ckeys){
-                       *iter=ck;
-                   }
-                   return iter;
+                    std::vector<Key> ckeys;
+                    if(isValid(node->value)){
+                        ckeys.emplace_back(Key(1,key));
+                    }
+                    std::transform(begin(clist),end(clist),std::back_inserter(ckeys),[&](auto& cv){
+                        return key+cv;
+                    });
+                    for(auto& ck:ckeys){
+                        *iter=ck;
+                    }
+                    return iter;
                 });
             }else{
 
@@ -131,9 +132,9 @@ struct Trie
             if(isValid(node->value)){
                 keys.push_back(prefix);
             }
-             for(auto& suff:get_suffix_list(node)){
+            for(auto& suff:get_suffix_list(node)){
                 keys.push_back(prefix+suff);
-             }
+            }
         }
         return keys;
     }
@@ -188,4 +189,6 @@ struct Trie
     }
     NodePtr root{std::make_unique<TrieNode>(TrieNode{{},Value{},' '})};
 };
+}
+
 #endif // TRIE_HPP

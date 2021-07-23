@@ -6,97 +6,99 @@
 #include <map>
 #include <cmath>
 #include <functional>
+#include <strstream>
+namespace GGL {
 template<typename VTYPE,typename EdgeHandler>
 struct GraphImpl
 {
-   using VertexType=VTYPE;
-   using AdjList =std::vector<VertexType>;
-   using hash_map = std::map<VertexType,AdjList>;
-   using vec_map=std::vector<AdjList>;
+    using VertexType=VTYPE;
+    using AdjList =std::vector<VertexType>;
+    using hash_map = std::map<VertexType,AdjList>;
+    using vec_map=std::vector<AdjList>;
 
-   using GRAPH=typename std::conditional<std::is_integral_v<VTYPE>,vec_map,hash_map>::type;
-   GRAPH m_adj_list;
-   void intialise(int noofvertex,vec_map&){
-       while(noofvertex-->0) m_adj_list.emplace_back();
-   }
-   void intialise(int noofvertex,hash_map&){
+    using GRAPH=typename std::conditional<std::is_integral_v<VTYPE>,vec_map,hash_map>::type;
+    GRAPH m_adj_list;
+    void intialise(int noofvertex,vec_map&){
+        while(noofvertex-->0) m_adj_list.emplace_back();
+    }
+    void intialise(int noofvertex,hash_map&){
 
-   }
-   GraphImpl(int noofvertex){intialise(noofvertex,m_adj_list);}
-   void add_edge(VertexType v1,VertexType v2){
-       if(std::find(std::begin(m_adj_list[v1]),std::end(m_adj_list[v1]),v2)==std::end(m_adj_list[v1])){
-           EdgeHandler h;
-           h(m_adj_list,v1,v2);
-       }
-   }
-   AdjList& adj_list(VertexType v){
-       return m_adj_list[v];
-   }
+    }
+    GraphImpl(int noofvertex){intialise(noofvertex,m_adj_list);}
+    void add_edge(VertexType v1,VertexType v2){
+        if(std::find(std::begin(m_adj_list[v1]),std::end(m_adj_list[v1]),v2)==std::end(m_adj_list[v1])){
+            EdgeHandler h;
+            h(m_adj_list,v1,v2);
+        }
+    }
+    AdjList& adj_list(VertexType v){
+        return m_adj_list[v];
+    }
 
-   void print(auto& os)
-   {
-       os<<"\nPrinting...\n";
-       print(os,m_adj_list);
+    void print(auto& os)
+    {
+        os<<"\nPrinting...\n";
+        print(os,m_adj_list);
 
-   }
-   void print(auto& os, vec_map& vmap){
-       int vertex=0;
-       for(auto& l:vmap){
-           if(l.size()){
-               os<<vertex<<"-> ";
-               for(auto& v:l){
+    }
+    void print(auto& os, vec_map& vmap){
+        int vertex=0;
+        for(auto& l:vmap){
+            if(l.size()){
+                os<<vertex<<"-> ";
+                for(auto& v:l){
                     os<<v<<" ";
                 }
                 os<<"\n";
-           }
-           vertex++;
-       }
-   }
+            }
+            vertex++;
+        }
+    }
 
 
-   void print(auto& os, hash_map& vmap){
+    void print(auto& os, hash_map& vmap){
 
-       for(auto& l:vmap){
-           if(l.second.size()){
-               os<<l.first<<"-> ";
-               for(auto& v:l.second){
+        for(auto& l:vmap){
+            if(l.second.size()){
+                os<<l.first<<"-> ";
+                for(auto& v:l.second){
                     os<<v<<" ";
                 }
                 os<<"\n";
-           }
+            }
 
-       }
-   }
+        }
+    }
 
-   template<typename Handler>
-   void for_each_vertices(Handler h,vec_map& vmap)
-   {
-       int index{0};
-       for(auto& l:vmap){
-           h(index);
-       }
-   }
-   template<typename Handler>
-   void for_each_vertices(Handler h,hash_map& vmap)
-   {
-       for(auto& l:vmap){
-           h(l.first);
-       }
-   }
-   template<typename Handler>
-   void for_each_vertices(Handler h)
-   {
-       for_each_vertices(std::move(h),m_adj_list);
-   }
-   auto begin(){
-       return  m_adj_list.begin();
-   }
-   auto end(){
-       return  m_adj_list.end();
-   }
-   auto size()const{
-       return m_adj_list.size();
-   }
+    template<typename Handler>
+    void for_each_vertices(Handler h,vec_map& vmap)
+    {
+        int index{0};
+        for(auto& l:vmap){
+            h(index);
+        }
+    }
+    template<typename Handler>
+    void for_each_vertices(Handler h,hash_map& vmap)
+    {
+        for(auto& l:vmap){
+            h(l.first);
+        }
+    }
+    template<typename Handler>
+    void for_each_vertices(Handler h)
+    {
+        for_each_vertices(std::move(h),m_adj_list);
+    }
+    auto begin(){
+        return  m_adj_list.begin();
+    }
+    auto end(){
+        return  m_adj_list.end();
+    }
+    auto size()const{
+        return m_adj_list.size();
+    }
 };
 struct undirected{
     void operator()(auto& g,auto& v1, auto& v2){
@@ -138,7 +140,7 @@ struct MatrixIterators {
         MatrixType(int r, int c):row(r),column(c){}
         MatrixType(std::pair<int,int> rc):row(rc.first),column(rc.second){}
         bool operator()(const  ENTRY_TYPE& val){
-           return predicate(val);
+            return predicate(val);
         }
         template<typename OS>
         void print(OS& os)
@@ -231,7 +233,7 @@ struct MatrixIterators {
         static void for_each_vertices(MatrixType& metrix,Handler h){
             int i{0};
             while(i<metrix.row){
-               h(VertexType{i});
+                h(VertexType{i});
             }
         }
         static auto size(const MatrixType& m){
@@ -243,16 +245,16 @@ struct MatrixIterators {
 
 
     struct Neighbours8{
-         using VertexType=std::pair<int,int>;
-         using type=std::array<VertexType,8>;
-         static constexpr std::array<VertexType,8> values={VertexType{-1,0},VertexType{-1,-1},VertexType{0,-1},VertexType{1,-1},VertexType{1,0},VertexType{1,1},VertexType{0,1},VertexType{-1,1},};
+        using VertexType=std::pair<int,int>;
+        using type=std::array<VertexType,8>;
+        static constexpr std::array<VertexType,8> values={VertexType{-1,0},VertexType{-1,-1},VertexType{0,-1},VertexType{1,-1},VertexType{1,0},VertexType{1,1},VertexType{0,1},VertexType{-1,1},};
 
 
     };
     struct Neighbours4{
-         using VertexType=std::pair<int,int>;
-         using type=std::array<VertexType,4>;
-         static constexpr std::array<VertexType,4> values={VertexType{-1,0},VertexType{0,-1},VertexType{1,0},VertexType{0,1}};
+        using VertexType=std::pair<int,int>;
+        using type=std::array<VertexType,4>;
+        static constexpr std::array<VertexType,4> values={VertexType{-1,0},VertexType{0,-1},VertexType{1,0},VertexType{0,1}};
     };
     template<typename Neighbours>
     struct NeighbourList:Neighbours{
@@ -326,7 +328,7 @@ struct MatrixIterators {
                 temp.first+=1;
                 temp.second=0;
             }
-           return temp;
+            return temp;
         }
 
         static std::string to_string(const VertexType& v){
@@ -361,12 +363,12 @@ struct MatrixIterators {
             }
         }
         static void setValue(MatrixType& m,const ENTRY_TYPE& value,const VertexType& v){
-         NeighbourList l(m,v);
-         *l=value;
+            NeighbourList l(m,v);
+            *l=value;
         }
         static ENTRY_TYPE& value(MatrixType& m,const VertexType& v){
-         NeighbourList l(m,v);
-         return *l;
+            NeighbourList l(m,v);
+            return *l;
         }
         static auto size(const MatrixType& m){
             return m.row*m.column;
@@ -399,11 +401,11 @@ struct MatrixGraph
     MatrixGraph(Matrix m):m(std::move(m)){}
     MatrixGraph(const std::initializer_list<T>& data,int r=-1):m(getDimension(data,r)){
 
-       std::copy(begin(data),end(data),std::back_inserter(m));
+        std::copy(begin(data),end(data),std::back_inserter(m));
     }
     MatrixGraph(Buffer data,int r=-1):m(getDimension(data,r)){
 
-       std::copy(std::begin(data),std::end(data),std::back_inserter(m));
+        std::copy(std::begin(data),std::end(data),std::back_inserter(m));
     }
     template<typename Pred>
     MatrixGraph& setPredicate(Pred pred){
@@ -464,7 +466,23 @@ template <typename T>
 struct EdgeWeightedGraph
 {
     using VertexType=T;
-    struct Edge{
+    template<typename U>
+    struct Comparable{
+        const U& self()const{return static_cast<const U&>(*this);}
+        bool operator<(const U& e2)const{
+            return self().weight()<e2.weight();
+        }
+        bool operator>=(const U& e2)const{
+            return !(self()<e2);
+        }
+        bool operator>(const U& e2)const{
+            return e2<self();
+        }
+        bool operator<=(const U& e2)const{
+            return !(e2<self());
+        }
+    };
+    struct Edge:Comparable<Edge>{
         using VertexType=T;
         VertexType v1{};
         VertexType v2{};
@@ -474,24 +492,49 @@ struct EdgeWeightedGraph
         int weight()const{return w;}
         Edge(){}
         Edge(VertexType v1, VertexType v2, int w):v1{v1},v2{v2},w(w){}
-        friend bool operator<(const Edge& e1,const Edge& e2){
-            return e1.weight()<e2.weight();
-        }
-        friend bool operator>=(const Edge& e1,const Edge& e2){
-            return !(e1<e2);
-        }
-        friend bool operator>(const Edge& e1,const Edge& e2){
-            return e2<e1;
-        }
-        friend bool operator<=(const Edge& e1,const Edge& e2){
-            return !(e2<e1);
-        }
+
         friend bool operator==(const Edge&e1, const Edge& e2){
             return e1.v1 == e2.v1 && e1.v2 == e2.v2 && e1.w == e2.w;
         }
         friend bool operator!=(const Edge&e1, const Edge& e2){
             return !(e1==e2);
         }
+        auto to_string()const {std::strstream ss; ss<<"{ "<< v1<<" "<v2<<" "<<weight()<<"} "; return ss.str();}
+        void add_me(auto& g)const{
+            g[either()].push_back(*this);
+            g[other(either())].push_back(*this);
+        }
+        void add_me_to_collection(auto& edgs)const{
+            if(find(std::begin(edgs),std::end(edgs),*this)==std::end(edgs)){
+                edgs.push_back(*this);
+            }
+        }
+    };
+    struct DEdge:Comparable<DEdge>{
+        using VertexType=T;
+        VertexType v1{};
+        VertexType v2{};
+        int w{};
+        VertexType from()const {return v1;}
+        VertexType to(VertexType v)const { return v2;}
+        int weight()const{return w;}
+        DEdge(){}
+        DEdge(VertexType v1, VertexType v2, int w):v1{v1},v2{v2},w(w){}
+
+        friend bool operator==(const DEdge&e1, const DEdge& e2){
+            return e1.v1 == e2.v1 && e1.v2 == e2.v2 && e1.w == e2.w;
+        }
+        friend bool operator!=(const DEdge&e1, const DEdge& e2){
+            return !(e1==e2);
+        }
+        void add_me(auto& g)const{
+            g[from()].push_back(*this);
+        }
+        void add_me_to_collection(auto& edgs){
+            edgs.push_back(*this);
+        }
+        auto to_string()const {std::strstream ss; ss<<"{ "<< from()<<" "<to()<<" "<<weight()<<"} "; return ss.str();}
+
 
     };
     using value_type=Edge;
@@ -500,11 +543,10 @@ struct EdgeWeightedGraph
     using vec_map=std::vector<AdjList>;
     using GRAPH=typename std::conditional<std::is_integral_v<VertexType>,vec_map,hash_map>::type;
     GRAPH g;
-    EdgeWeightedGraph(int noofvertex){std::generate_n(std::back_inserter(g),noofvertex,[](){return std::vector<Edge>();});}
+    EdgeWeightedGraph(int noofvertex){std::generate_n(std::back_inserter(g),noofvertex,[](){return std::vector<value_type>();});}
     EdgeWeightedGraph(){static_assert (std::is_same_v<hash_map,decltype (g)>,"call this constructor for non integral vertex types" );}
-    EdgeWeightedGraph& addEdge(const Edge& e){
-        g[e.either()].push_back(e);
-        g[e.other(e.either())].push_back(e);
+    EdgeWeightedGraph& addEdge(const value_type& e){
+        e.add_me(g);
         return *this;
     }
     const auto& adj_list(const VertexType& v)const{
@@ -522,7 +564,7 @@ struct EdgeWeightedGraph
         for(const auto& adj:map){
             os<<vertex<<"-> ";
             for(const auto& e:adj){
-                os<<"{ "<< e.either()<<" "<<e.other(e.either())<<" "<<e.weight()<<"} ";
+                os<<e.to_string();
             }
             os<<"\n";vertex++;
         }
@@ -536,7 +578,7 @@ struct EdgeWeightedGraph
         for(const auto& p:map){
             os<<p.first<<"-> ";
             for(const auto& e:p.second){
-                os<<"{ "<< e.either()<<" "<<e.other(e.either())<<" "<<e.weight()<<"} ";
+                os<<e.to_string();
             }
             os<<"\n";
         }
@@ -552,7 +594,7 @@ struct EdgeWeightedGraph
                 return *std::begin(l);
             }
         }
-        return Edge();
+        return value_type();
     }
     auto first(hash_map& m){
         for(auto& l:m){
@@ -560,14 +602,14 @@ struct EdgeWeightedGraph
                 return *std::begin(l.second);
             }
         }
-        return Edge();
+        return value_type();
     }
     auto edges(){
         return edges(g);
     }
     auto edges(vec_map& m){
         //find a better algorithm or data structure to avoid search for duplicate
-        std::vector<Edge> edgs;
+        std::vector<value_type> edgs;
         for(auto& l:m){
             for(auto& e:l){
                 if(find(std::begin(edgs),std::end(edgs),e)==std::end(edgs)){
@@ -577,14 +619,12 @@ struct EdgeWeightedGraph
         }
         return edgs;
     }
-    auto edges(hash_map& m){
+    auto edges(hash_map& m)const {
         //find a better algorithm or data structure to avoid search for duplicate
-        std::vector<Edge> edgs;
+        std::vector<value_type> edgs;
         for(auto& l:m){
             for(auto& e:l.second){
-                if(find(std::begin(edgs),std::end(edgs),e)==std::end(edgs)){
-                    edgs.push_back(e);
-                }
+                e.add_me_to_collection(edgs);
             }
         }
         return edgs;
@@ -600,5 +640,7 @@ struct EdgeWeightedGraph
     }
 
 };
+}
+
 
 #endif // GRAPH_HPP

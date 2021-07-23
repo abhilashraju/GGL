@@ -1,4 +1,5 @@
 #include "priorityqueue.hpp"
+using namespace GGL;
 int main (){
 
     std::vector ran={1,4,2,5,6,7,3,8,9,2,12,11,11,11,11};
