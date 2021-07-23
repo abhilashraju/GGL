@@ -5,8 +5,8 @@ int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-//    MetrixGraphsUI graph;
-    MstGraph graph;
+    MetrixGraphsUI graph;
+//    MstGraph graph;
 //    GraphUi graph;
     graph.show();
 

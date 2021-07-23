@@ -13,18 +13,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+#SOURCES =../console/graphs.cpp\
+#        priorityqueue.cpp\
+#        trie.cpp\
+#        union_find.cpp\
+#        mst.cpp
+SOURCES +=main.cpp \
 
-SOURCES += \
-#        graphs.cpp
-#        priorityqueue.cpp
-#        trie.cpp
-#        union_find.cpp
-         main.cpp \
-#         mst.cpp \
-         dfs_bfs_gui.cpp \
-         gs_apps.cpp \
-         mst_gui.cpp \
-         rasterwindow.cpp
+
+SOURCES +=rasterwindow.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -33,9 +30,13 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 INCLUDEPATH += ../../src
 HEADERS += \
-    graph.hpp \
-    graphalgorithms.hpp \
-    priorityqueue.hpp \
-    rasterwindow.h \
-    trie.hpp \
-    union_find.hpp
+    ../../src/graph.hpp \
+    ../../src/graphalgorithms.hpp \
+    ../../src/priorityqueue.hpp \
+    ../../src/trie.hpp \
+    ../../src/union_find.hpp\
+    rasterwindow.h\
+     dfs_bfs_gui.cpp \
+     gs_apps.cpp \
+     mst_gui.cpp \
+

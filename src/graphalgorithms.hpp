@@ -79,11 +79,58 @@ struct make_dfs_push{
 };
 using GBFS=BFS_DFS<make_bfs_push>;
 using GDFS=BFS_DFS<make_dfs_push>;
-
 inline void travers(auto& g,auto root,auto alg,auto child_handler,auto handler){
 
     alg(g,root,child_handler,handler);
 }
+struct Connected_Cmponents
+{
+    auto make_visited(auto& g,int){
+        std::vector<bool> v;
+        std::generate_n(std::back_inserter(v),g.size(),[](){return false;});
+        return v;
+    }
+    auto make_visited(auto& g,auto any){
+        using  VertexType=typename std::remove_reference_t<decltype(g)>::VertexType;
+        std::map<VertexType,bool> map;
+        g.for_each_vertices([&](auto v){
+            map[v]=false;
+        });
+        return map;
+    }
+    auto next_non_visited(std::vector<bool>& visited){
+        auto iter=std::find(visited.begin(),visited.end(),false);
+        if(iter != visited.end()){
+            return std::pair<int,bool>{std::distance(visited.begin(),iter),true};
+        }
+        return std::pair<int,bool>{-1,false};
+
+    }
+    auto next_non_visited(auto& visited){
+        using  KeyType=typename std::remove_reference_t<decltype(visited)>::key_type;
+        auto iter=std::find_if(visited.begin(),visited.end(),[](auto& v){return v.second ==false;});
+        if(iter != visited.end()){
+            return std::pair<KeyType,bool>{iter->first,true};
+        }
+        return std::pair<KeyType,bool>{KeyType{},false};
+    }
+    void operator()(auto& g ,auto visithandler){
+        using  VertexType=typename std::remove_reference_t<decltype(g)>::VertexType;
+        auto map=make_visited(g,VertexType{});
+        auto v= next_non_visited(map);
+        int compid=1;
+        while(v.second){
+            travers(g,v.first,GDFS{},[&](auto& ,auto& ){},[&](const auto& c){
+                map[c]=true;
+                visithandler(compid,c);
+            });
+            compid++;
+            v=next_non_visited(map);
+        }
+     }
+};
+
+
 #include "priorityqueue.hpp"
 #include "union_find.hpp"
 struct m_s_t_kru{

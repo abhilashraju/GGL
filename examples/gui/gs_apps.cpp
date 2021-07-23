@@ -43,6 +43,7 @@ void MetrixGraphsUI::intialiseGraph(auto e1)
     dfsRect=QRect(width()/2,110,width()/4,50);
     bfsRect=QRect(width()*3/4,110,width()/4,50);
     bgimage=QImage("C:/Users/rabhil/work/Algorithms/test1/deep.jpg").scaled(width()/2,height()/2,Qt::KeepAspectRatio);
+
 }
 MetrixGraphsUI::MetrixGraphsUI()
 {

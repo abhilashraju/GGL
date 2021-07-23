@@ -52,6 +52,8 @@ struct GraphImpl
            vertex++;
        }
    }
+
+
    void print(auto& os, hash_map& vmap){
 
        for(auto& l:vmap){
@@ -64,6 +66,27 @@ struct GraphImpl
            }
 
        }
+   }
+
+   template<typename Handler>
+   void for_each_vertices(Handler h,vec_map& vmap)
+   {
+       int index{0};
+       for(auto& l:vmap){
+           h(index);
+       }
+   }
+   template<typename Handler>
+   void for_each_vertices(Handler h,hash_map& vmap)
+   {
+       for(auto& l:vmap){
+           h(l.first);
+       }
+   }
+   template<typename Handler>
+   void for_each_vertices(Handler h)
+   {
+       for_each_vertices(std::move(h),m_adj_list);
    }
    auto begin(){
        return  m_adj_list.begin();
@@ -142,6 +165,7 @@ struct MatrixIterators {
                 i++;
             }
         }
+
     };
 
     struct RowList{
@@ -202,6 +226,16 @@ struct MatrixIterators {
                 vertex++;
             }
             os<<"\n";
+        }
+        template<typename Handler>
+        static void for_each_vertices(MatrixType& metrix,Handler h){
+            int i{0};
+            while(i<metrix.row){
+               h(VertexType{i});
+            }
+        }
+        static auto size(const MatrixType& m){
+            return m.row;
         }
 
     };
@@ -315,6 +349,17 @@ struct MatrixIterators {
             }
             os<<"\n";
         }
+        template<typename Handler>
+        static void for_each_vertices(MatrixType& metrix,Handler h){
+            int i{0};
+            while(i<metrix.row){
+                int j{0};
+                while(j<metrix.column){
+                    h(VertexType{i,j});j++;
+                }
+                i++;
+            }
+        }
         static void setValue(MatrixType& m,const ENTRY_TYPE& value,const VertexType& v){
          NeighbourList l(m,v);
          *l=value;
@@ -322,6 +367,9 @@ struct MatrixIterators {
         static ENTRY_TYPE& value(MatrixType& m,const VertexType& v){
          NeighbourList l(m,v);
          return *l;
+        }
+        static auto size(const MatrixType& m){
+            return m.row*m.column;
         }
 
 
@@ -392,6 +440,15 @@ struct MatrixGraph
     template<typename Handler>
     auto for_each(Handler handler){
         return m.for_each(std::move(handler));
+    }
+
+    template<typename Handler>
+    auto for_each_vertices(Handler handler){
+        return AdjList::for_each_vertices(m,std::move(handler));
+    }
+    auto size()const
+    {
+        return AdjList::size(m);
     }
 
 };
