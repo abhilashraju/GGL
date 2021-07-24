@@ -137,14 +137,10 @@ struct Connected_Cmponents
 
 struct m_s_t_kru{
     auto make_uf(auto& g,int){
-        using  Edge=typename std::remove_reference_t<decltype(g)>::value_type;
-        using VertexType=typename Edge::VertexType;
-        return  Union_find<VertexType>(g.size());
+         return  Union_find<int>(g.size());
     }
     auto make_uf(auto& g,auto any){
-        using  Edge=typename std::remove_reference_t<decltype(g)>::value_type;
-        using VertexType=typename Edge::VertexType;
-        Union_find<VertexType> uf;
+        Union_find<decltype (any)> uf;
         std::transform(std::begin(g),std::end(g),std::back_inserter(uf),[](auto& v){
             return v.first;
         });
@@ -174,19 +170,14 @@ struct m_s_t_kru{
 };
 
 struct m_s_t_pri
-{   auto make_visited(auto& g,int){
-        using  Edge=typename std::remove_reference_t<decltype(g)>::value_type;
-        using  VertexType= typename Edge::VertexType;
-        using  VISITED_CONTAINER=typename std::conditional_t<std::is_integral_v<VertexType>,std::vector<bool>,std::map<VertexType,bool>>;
-        VISITED_CONTAINER visited;
+{
+    auto make_visited(auto& g,int){
+        std::vector<bool> visited;
         std::generate_n(std::back_inserter(visited),g.size(),[](){return false;});
         return visited;
     }
-    auto make_visited(auto& g,auto ){
-        using  Edge=typename std::remove_reference_t<decltype(g)>::value_type;
-        using  VertexType= typename Edge::VertexType;
-        using  VISITED_CONTAINER=typename std::conditional_t<std::is_integral_v<VertexType>,std::vector<bool>,std::map<VertexType,bool>>;
-        return VISITED_CONTAINER{};
+    auto make_visited(auto& g,auto v){
+        return std::map<decltype (v),bool>{};
     }
     auto operator()(auto& g,auto on_add_handler)
     {
@@ -220,6 +211,71 @@ struct m_s_t_pri
 inline auto m_s_t(auto Algo,auto& g,auto on_add_handler){
     return Algo(g,std::move(on_add_handler));
 }
+
+struct s_s_shortest_path{
+
+    auto make_visited(const auto& g,int){
+        std::vector<bool> visited;
+        std::generate_n(std::back_inserter(visited),g.size(),[](){return false;});
+        return visited;
+    }
+    auto make_visited(const auto& g,auto v){
+        return std::map<decltype (v),bool>{};
+    }
+    auto make_aux_arrays(const auto& g, int){
+        std::vector<int> lengths;
+        std::vector<int> parents;
+        std::generate_n(std::back_inserter(lengths),g.size(),[](){return std::numeric_limits<int>::max();});
+        std::generate_n(std::back_inserter(parents),g.size(),[](){return -1;});
+        return std::make_tuple(lengths,parents);
+    }
+    auto make_aux_arrays(const auto& g, auto v){
+        using  VertexType = decltype (v);
+        std::map<VertexType,int> lengths;
+        std::map<VertexType,VertexType> parents;
+        g.for_each_vertices([&](auto v){
+            lengths[v]=std::numeric_limits<int>::max();
+            parents[v]=VertexType{};
+        });
+        return std::make_tuple(lengths,parents);
+    }
+    auto relax(const auto& e,const auto& pathlengs,const auto& parents){
+        auto newlength=pathlengs[e.from()] + e.weight();
+        if(pathlengs[e.to()]> newlength){
+            return std::make_tuple(std::make_pair(e.to(),newlength),newlength,e.from());
+        }
+        return std::make_tuple(std::make_pair(e.to(),pathlengs[e.to()]),pathlengs[e.to()],parents[e.to()]);
+    }
+    void operator()(const auto& g,const auto& source,auto visit_handler){
+        using  Edge=typename std::remove_reference_t<std::remove_cv_t<decltype(g)>>::value_type;
+        using  VertexType= typename Edge::VertexType;
+
+        auto [path_lengths,parents]=make_aux_arrays(g,VertexType{});
+        auto visited=make_visited(g,VertexType{});
+        struct lesser{
+            bool operator()(const std::pair<VertexType,int>& v1,const std::pair<VertexType,int>& v2){
+              return v1.second<v2.second;
+            }
+        };
+        PriorityQueue<std::pair<VertexType,int>,lesser> queue;
+        path_lengths[source]=0;
+        parents[source]=source;
+        queue.push_back({source,path_lengths[source]});
+        while(!queue.empty()){
+            auto current=queue.take();
+            visited[current.first]=true;
+
+            for(auto e:g.adj_list(current.first)){
+                if(!visited[e.to()]){
+                    std::pair<VertexType,int> relaxed;
+                    std::tie(relaxed,path_lengths[e.to()],parents[e.to()])=relax(e,path_lengths,parents);
+                    queue.update_or_add(relaxed,[&](const auto& other){return relaxed.first == other.first;});
+                }
+            }
+            visit_handler(current.first,path_lengths[current.first],parents[current.first]);
+        }
+    }
+};
 }
 
 

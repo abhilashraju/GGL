@@ -462,7 +462,7 @@ template<typename T>
 using GridMatrix=MatrixGraph<T,typename MatrixIterators<T>::GridList>;
 
 
-template <typename T>
+template <typename T,bool Directed=false>
 struct EdgeWeightedGraph
 {
     using VertexType=T;
@@ -516,7 +516,7 @@ struct EdgeWeightedGraph
         VertexType v2{};
         int w{};
         VertexType from()const {return v1;}
-        VertexType to(VertexType v)const { return v2;}
+        VertexType to()const { return v2;}
         int weight()const{return w;}
         DEdge(){}
         DEdge(VertexType v1, VertexType v2, int w):v1{v1},v2{v2},w(w){}
@@ -537,7 +537,7 @@ struct EdgeWeightedGraph
 
 
     };
-    using value_type=Edge;
+    using value_type=typename std::conditional_t<Directed,DEdge,Edge>;
     using AdjList =std::vector<value_type>;
     using hash_map = std::map<VertexType,AdjList>;
     using vec_map=std::vector<AdjList>;
@@ -585,10 +585,10 @@ struct EdgeWeightedGraph
         os<<"\n";
         return *this;
     }
-    auto first(){
+    auto first()const{
         return first(g);
     }
-    auto first(vec_map& m){
+    auto first(vec_map& m)const{
         for(auto& l:m){
             if(l.size()){
                 return *std::begin(l);
@@ -596,7 +596,7 @@ struct EdgeWeightedGraph
         }
         return value_type();
     }
-    auto first(hash_map& m){
+    auto first(hash_map& m)const{
         for(auto& l:m){
             if(l.second.size()){
                 return *std::begin(l.second);
@@ -604,10 +604,10 @@ struct EdgeWeightedGraph
         }
         return value_type();
     }
-    auto edges(){
+    auto edges()const{
         return edges(g);
     }
-    auto edges(vec_map& m){
+    auto edges(vec_map& m)const{
         //find a better algorithm or data structure to avoid search for duplicate
         std::vector<value_type> edgs;
         for(auto& l:m){
@@ -629,7 +629,7 @@ struct EdgeWeightedGraph
         }
         return edgs;
     }
-    auto size(){
+    auto size()const{
         return g.size();
     }
     auto begin(){
@@ -640,6 +640,8 @@ struct EdgeWeightedGraph
     }
 
 };
+template <typename T>
+using DEdgeWeightedGraph=EdgeWeightedGraph<T,true>;
 }
 
 

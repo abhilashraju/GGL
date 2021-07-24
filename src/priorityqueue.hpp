@@ -53,7 +53,7 @@ struct PriorityQueue
         return ret;
     }
     template<typename EqComp>
-    void update(const T& d,EqComp comp){
+    bool update(const T& d,EqComp comp){
         auto iter = std::find_if(std::begin(queue),std::end(queue),comp);
         if(iter != std::end(queue)){
             auto distance = std::distance(std::begin(queue),iter);
@@ -61,13 +61,25 @@ struct PriorityQueue
             *iter=d;
             if(swi){
                 swim(distance);
-                return;
+                return true;
             }
             sink(distance);
+            return true;
         }
+        return false;
     }
-    void update(const T& d){
-        update(d,[&](auto f){return f==d;});
+    bool update(const T& d){
+        return update(d,[&](auto f){return f==d;});
+    }
+    template<typename EqComp>
+    void update_or_add(const T& d,EqComp comp){
+        if(update(d,std::move(comp))){
+            return ;
+        }
+        insert(d);
+    }
+    void update_or_add(const T& d){
+        update_or_add(d,[&](auto f){return f==d;});
     }
     template<typename EqComp>
     void remove(const T& d,EqComp comp){
@@ -90,6 +102,7 @@ struct PriorityQueue
     auto begin(){return queue.begin()+1;}
     auto end(){return queue.end();}
     auto size(){return queue.size()-1;}
+    bool empty(){return size()<=0;}
     void print(){
         int level = std::log2(size())+2;
         auto center_aligned = [](int v,auto str){

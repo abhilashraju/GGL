@@ -19,7 +19,8 @@ SOURCES =\
 #        ../console/trie.cpp\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
-         main.cpp \
+ #         main.cpp \
+    ../console/shortest_path.cpp
 
 
 SOURCES +=rasterwindow.cpp
