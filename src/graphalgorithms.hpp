@@ -240,11 +240,11 @@ struct s_s_shortest_path{
         return std::make_tuple(lengths,parents);
     }
     auto relax(const auto& e,const auto& pathlengs,const auto& parents){
-        auto newlength=pathlengs[e.from()] + e.weight();
-        if(pathlengs[e.to()]> newlength){
+        auto newlength=pathlengs.at(e.from()) + e.weight();
+        if(pathlengs.at(e.to())> newlength){
             return std::make_tuple(std::make_pair(e.to(),newlength),newlength,e.from());
         }
-        return std::make_tuple(std::make_pair(e.to(),pathlengs[e.to()]),pathlengs[e.to()],parents[e.to()]);
+        return std::make_tuple(std::make_pair(e.to(),pathlengs.at(e.to())),pathlengs.at(e.to()),parents.at(e.to()));
     }
     void operator()(const auto& g,const auto& source,auto visit_handler){
         using  Edge=typename std::remove_reference_t<std::remove_cv_t<decltype(g)>>::value_type;

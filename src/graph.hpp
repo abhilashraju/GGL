@@ -529,6 +529,7 @@ struct EdgeWeightedGraph
         }
         void add_me(auto& g)const{
             g[from()].push_back(*this);
+            g[to()];//to keep the vertices in the list;
         }
         void add_me_to_collection(auto& edgs){
             edgs.push_back(*this);
@@ -628,6 +629,24 @@ struct EdgeWeightedGraph
             }
         }
         return edgs;
+    }
+    template<typename Handler>
+    void for_each_vertices(const hash_map& m,Handler h)const{
+        for(const auto& p: m){
+            h(p.first);
+        }
+    }
+    template<typename Handler>
+    void for_each_vertices(const vec_map& m,Handler h)const{
+        VertexType i{0};
+        while (i<m.size()) {
+            h(i++);
+        }
+    }
+
+    template<typename Handler>
+    void for_each_vertices(Handler h)const{
+        for_each_vertices(g,std::move(h));
     }
     auto size()const{
         return g.size();
