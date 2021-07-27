@@ -162,31 +162,32 @@ void GraphUi::render(QPainter *p)
     QColor vertexcolor(127, 0, 127);
     QColor edgecoulor(127, 127, 127, 50);
 
+    auto draw_vertex=[&](auto v,auto color){
+        auto pt1=row_col(v,noice[v]);
+        p->setPen(color);
+        p->setBrush(color);
+        p->drawEllipse(pt1,5,5);
+//            p->drawText(pt1,QString("%1").arg(v1));
+        return  pt1;
+    };
+    auto draw_line=[&](auto pt1,auto pt2,auto color){
+        p->setPen(QPen(color,3));
+        p->setBrush(color);
+        p->drawLine(pt1,pt2);
+    };
     auto drawGraph=[&](auto& stack, auto& endi,auto& map, auto pen)mutable{
         auto v1=0;
         for(auto& l:graph){
             for(auto& v2:l){
-                auto pt1=row_col(v1,noice[v1]);
-                auto pt2=row_col(v2,noice[v2]);
-                p->setPen(vertexcolor);
-                p->setBrush(vertexcolor);
-                p->drawEllipse(pt1,5,5);
-    //            p->drawText(pt1,QString("%1").arg(v1));
-                p->drawEllipse(pt2,5,5);
-    //            p->drawText(pt2,QString("%1").arg(v2));
-                QPen pen(edgecoulor,5);
 
-                p->setPen(pen);
-                p->drawLine(pt1,pt2);
+                draw_line(draw_vertex(v1,vertexcolor),draw_vertex(v2,vertexcolor),edgecoulor);
             }
             v1++;
         }
         auto iter=stack.begin();
         p->setPen(pen);
         while(iter != endi){
-            auto pt1=row_col(map[*iter],noice[map[*iter]]);
-            auto pt2=row_col(*iter,noice[*iter]);
-            p->drawLine(pt1,pt2);
+            draw_line(draw_vertex(map[*iter],vertexcolor),draw_vertex(*iter,vertexcolor),pen);
             iter++;
         }
         endi++;
@@ -194,7 +195,7 @@ void GraphUi::render(QPainter *p)
 
     };
     p->save();
-    drawGraph(depthSearch,depIter,depmap,QPen(Qt::red,3));
+    drawGraph(depthSearch,depIter,depmap,Qt::red);
     p->restore();
     p->save();
     p->translate(width()/2,height()/4);
@@ -205,7 +206,7 @@ void GraphUi::render(QPainter *p)
     drawText(QRect(0,0,width()/2,50),"Breadth First");
     p->restore();
     p->translate(width()/2,height()/2);
-    drawGraph(bredthSearch,bredIter,bredmap,QPen(Qt::green,3));
+    drawGraph(bredthSearch,bredIter,bredmap,Qt::green);
 
 }
 

@@ -31,8 +31,8 @@ int main(int argc, char **argv)
 
 //    MetrixGraphsUI graph;
 //    MstGraph graph;
-//    GraphUi graph;
-      SpGraph graph;
+    GraphUi graph;
+//      SpGraph graph;
     graph.show();
 
     return app.exec();

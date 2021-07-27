@@ -154,34 +154,32 @@ void MstGraph::render(QPainter *p)
     QColor edgecoulor(127, 127, 127, 50);
 
 
-
+    auto draw_vertex=[&](auto v,auto color){
+        auto pt1=row_col(v,noice[v]);
+        p->setPen(color);
+        p->setBrush(color);
+        p->drawEllipse(pt1,5,5);
+//            p->drawText(pt1,QString("%1").arg(v1));
+        return  pt1;
+    };
+    auto draw_line=[&](auto pt1,auto pt2,auto color){
+        p->setPen(QPen(color,3));
+        p->setBrush(color);
+        p->drawLine(pt1,pt2);
+    };
 
     auto drawMst=[&](auto& current,auto& tree,const auto& pen){
         for(auto& e:graph.edges()){
             const auto& v1=e.either();
             const auto& v2=e.other(e.either());
-            auto pt1=row_col(v1,noice[v1]);
-            auto pt2=row_col(v2,noice[v2]);
-
-            p->setPen(vertexcolor);
-            p->setBrush(vertexcolor);
-            p->drawEllipse(pt1,5,5);
-//            p->drawText(pt1,QString("%1").arg(v1));
-            p->drawEllipse(pt2,5,5);
-//            p->drawText(pt2,QString("%1").arg(v2));
-            QPen pen(edgecoulor,5);
-
-            p->setPen(pen);
-            p->drawLine(pt1,pt2);
+            draw_line(draw_vertex(v1,vertexcolor),draw_vertex(v2,vertexcolor),edgecoulor);
         }
         for(auto iter =tree.begin();iter!=current;iter++) {
             auto& e=*iter;
             const auto& v1=e.either();
             const auto& v2=e.other(e.either());
-            auto pt1=row_col(v1,noice[v1]);
-            auto pt2=row_col(v2,noice[v2]);
             p->setPen(pen);
-            p->drawLine(pt1,pt2);
+            draw_line(draw_vertex(v1,vertexcolor),draw_vertex(v2,vertexcolor),pen);
 
         }
         if(tree.end()!= current){
@@ -189,9 +187,8 @@ void MstGraph::render(QPainter *p)
         }
 
     };
-    auto pen=QPen(QPen(Qt::red,3));
-    p->setPen(pen);
-    drawMst(primIter,primTree, pen);
+
+    drawMst(primIter,primTree, Qt::red);
     p->save();
 
     p->translate(width()/2,height()/4);
@@ -204,7 +201,7 @@ void MstGraph::render(QPainter *p)
     drawText(QRect(0,0,width()/2,50),"Krusk MST");
     p->restore();
     p->translate(width()/2,height()/2);
-    drawMst(krukIter,krukTree, QPen(Qt::green,3));
+    drawMst(krukIter,krukTree, Qt::green);
 
 
 
