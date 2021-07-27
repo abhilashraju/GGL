@@ -7,5 +7,6 @@ Generic Graph Library , A library of generic graph data structures and algorithm
 Generic and reusable components to solve common graph problems. The implementation follows STL philosophy that separates data structure and alogorithms and connect them together through well defined concepts. So the library is 
 1) A collection of reusable generic alogorthms that can work with any data type that are compatible with the concepts the algorithm expects
 2) A collection of generic graph containers that reresents different graph models which can be parameterised based on user defined vertex type
+
 This seperation of graph model from its algorithm enables us to achieve multiplicative reusability. Which means you can apply several graph algorithms to a single graph model and vice versa
 
