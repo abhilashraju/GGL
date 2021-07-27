@@ -48,4 +48,8 @@ travers(sg,"Abhilash",GDFS(),[&](auto p,auto c){
 Travers is a generic function from library that accepts a graph , the start vertex , the search algorithm and two user specfic action that need to be taken whenever 
 1) algorithm visit a vertex.
 2) algorithm enques a child vertex for visit.
-user can choose to provide any of the above two call backs my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationshil between vertices.
+
+User can choose to provide any of the above two callbacks my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationship between vertices.
+
+Now let's dig a bit deeper into the actual search algorithms
+
