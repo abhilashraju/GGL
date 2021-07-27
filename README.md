@@ -11,5 +11,5 @@ Generic and reusable components to solve common graph problems. The implementati
 This seperation of graph model from its algorithm enables us to achieve multiplicative reusability. Which means you can apply several graph algorithms to a single graph model and vice versa
 
 Examples
-<script src="https://gist.github.com/abhilashraju/ff9097c7f9fa2788b20803a160c20bbe.js"></script>
+https://gist.github.com/abhilashraju/ff9097c7f9fa2788b20803a160c20bbe
 
