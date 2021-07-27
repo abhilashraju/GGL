@@ -52,4 +52,11 @@ Travers is a generic function from library that accepts a graph , the start vert
 User can choose to provide any of the above two callbacks my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationship between vertices.
 
 Now let's dig a bit deeper into the actual search algorithms
+Again it is just a parmeterised version of another generic algorithm. The only difference between DFS, and BFS is in its usage stack and queue . Then why not parameterise it?
+```
+using GBFS=BFS_DFS<make_bfs_push>;
+using GDFS=BFS_DFS<make_dfs_push>;
+```
+See the type alias declaration . The main difference is in its pushing strategy. One pushed new vertices in front while the other put it in back.
+
 
