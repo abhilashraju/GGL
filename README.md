@@ -83,3 +83,40 @@ for(auto& l:map){
 ```
 The connected components is another useful algorithm that accepts a graph and a callback. The callback will be called with the vertex and the id of connected component it belong to . The id is just an integer indicating the current connected component count. So, after  completing the algorithm  you can use the last id as total number of connected component in the graph.
 One good application of connected component and our people graph is that you can easily find out how many different families are there in the graph and  can cluster them based on the family they belong to.
+
+Adjuscency list based graph is just one part of the story. In real life we will come across other kind of graphs that comes in matrix form. In this kind of graph each entry in the matrix represents the vertex.Basically this kind of graphs conveys its relationship with it neibhourhood vertices. The edges are implicit in this graph. The choice of possible edges from a vertex depends on the traversal choice we make . For example we can choose to traverse the negihborhood vertices in a cross manner. Possible edges in this cross metrix is left/right and top/bottom . It looked like a cross , hence the name is chosen. Another possible traversal method is grid. Possible edges in grid metrix includes all neighbouring vertices including corner one. That looked like a grid, hence the name is chosen. Apart from difference in these iteration directions everything else in this graph is same. So a better choice of implimentation is to have a generic matrix graph parmeterised using an iterator type.
+The following code snippet shows avaiable metrix graph
+
+```
+template<typename T>
+using RowMatrix=MatrixGraph<T,typename MatrixIterators<T>::RowList>;
+template<typename T>
+using CrossMatrix=MatrixGraph<T,typename MatrixIterators<T>::CrossList>;
+template<typename T>
+using GridMatrix=MatrixGraph<T,typename MatrixIterators<T>::GridList>;
+```
+Once again the Vertex can be any user defined types. Generally this kind of graph comes in image processing use case ,where each vetices represents a pixel or colour. Ther are several problem in image processing that can be solved using BFS , DFS ,connected components or shortest path algorithms running on matrix graph. Colour filling , sean carving etc are examples of that. I have included  one small game application "Guess who" in the demo section, which use DFS and BFS to remove forground pixel to see the picture underneath. 
+Below code snippet is an example usage of charecter-matrix graph.It demostrate how we can replace one set of conneted character vertices with another character vertices.
+```
+using CGVertex=typename CrossMatrix<char>::VertexType;
+CrossMatrix<char> cg({
+                   'a','b','a','a',
+                   'b','b','b','a',
+                   'a','b','a','a',
+                   'b','b','a','a',
+                 });
+cg.setPredicate([](char c){return c=='a';}).printContent(std::cout);
+
+std::map<CGVertex,CGVertex> vertexParents;
+travers(cg,CGVertex{3,3},GDFS(),[&](auto p,auto c){
+    vertexParents[c]=p;
+    std::cout<< cg.to_string(p)<<cg.to_string(c)<<"\n";
+},[&](auto v){
+    cg.setValue(v,'b');
+});
+printparents(vertexParents,CGVertex{0,2},CGVertex{0,0},[&](auto& v){return cg.to_string(v);});
+cg.printContent(std::cout);
+```
+
+
+
