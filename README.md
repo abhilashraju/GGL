@@ -12,5 +12,14 @@ This seperation of graph model from its algorithm enables us to achieve multipli
 
 Examples
 ```
-https://gist.github.com/abhilashraju/ff9097c7f9fa2788b20803a160c20bbe
+using Graph=GraphImpl<int,undirected>;
+using DGraph=GraphImpl<int,directed>;
+
+DGraph g(10);
+g.add_edge(0,2);
+g.add_edge(0,5);
+g.add_edge(2,5);
+g.add_edge(1,5);
+g.add_edge(5,1);
+g.print(std::cout);
 ```
