@@ -52,7 +52,7 @@ Travers is a generic function from library that accepts a graph , the start vert
 User can choose to provide any of the above two callbacks my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationship between vertices.
 
 Now let's dig a bit deeper into the actual search algorithms
-Again it is just a parmeterised version of another generic algorithm. The only difference between DFS, and BFS is in its usage stack and queue . Then why not parameterise it?
+Again it is just a parmeterised version of another generic algorithm. The only difference between DFS, and BFS is in its usage of stack and queue . Then why not parameterise it?
 ```
 using GBFS=BFS_DFS<make_bfs_push>;
 using GDFS=BFS_DFS<make_dfs_push>;
@@ -65,4 +65,20 @@ inline void travers(auto& g,auto root,auto alg,auto child_handler,auto handler){
     alg(g,root,child_handler,handler);
 }
 ```
+If you wanted to find out number of connected components in the same graph .There is an algorithm for you . The following code demonstrate that.
 
+```
+ConnectedMap<VertexType> map;
+Connected_Cmponents{}(g,[&](auto index,auto v){
+    map[index].push_back(v);
+});
+std::cout<< "\nPrinting connected components..\n";
+for(auto& l:map){
+     std::cout<<l.first<< "= ";
+    for(auto& e:l.second){
+        std::cout<<e<<" ";
+    }
+    std::cout<<"\n";
+}
+```
+The connected components is another useful algorithm that accepts a graph and a callback. The callback will be called with the vertex and the id of connected component it belong to . The id is just an integer indicating the current connected component count. So, after  completing the algorithm  you can use the last id as total number of connected component in the graph.
