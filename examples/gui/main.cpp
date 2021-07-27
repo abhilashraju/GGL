@@ -24,13 +24,15 @@ SOFTWARE.
 #include "gs_apps.cpp"
 #include "dfs_bfs_gui.cpp"
 #include "mst_gui.cpp"
+#include "shortest_path_gui.hpp"
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
 //    MetrixGraphsUI graph;
-    MstGraph graph;
+//    MstGraph graph;
 //    GraphUi graph;
+      SpGraph graph;
     graph.show();
 
     return app.exec();

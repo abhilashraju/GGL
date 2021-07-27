@@ -19,8 +19,8 @@ SOURCES =\
 #        ../console/trie.cpp\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
- #         main.cpp \
-    ../console/shortest_path.cpp
+          main.cpp \
+#    ../console/shortest_path.cpp
 
 
 SOURCES +=rasterwindow.cpp
@@ -40,5 +40,6 @@ HEADERS += \
     rasterwindow.h\
      dfs_bfs_gui.cpp \
      gs_apps.cpp \
-     mst_gui.cpp \
+     mst_gui.cpp \ \
+    shortest_path_gui.hpp
 

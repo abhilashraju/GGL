@@ -612,7 +612,7 @@ struct EdgeWeightedGraph
     auto first()const{
         return first(g);
     }
-    auto first(vec_map& m)const{
+    auto first(const vec_map& m)const{
         for(auto& l:m){
             if(l.size()){
                 return *std::begin(l);
@@ -620,7 +620,7 @@ struct EdgeWeightedGraph
         }
         return value_type();
     }
-    auto first(hash_map& m)const{
+    auto first(const hash_map& m)const{
         for(auto& l:m){
             if(l.second.size()){
                 return *std::begin(l.second);
@@ -631,7 +631,7 @@ struct EdgeWeightedGraph
     auto edges()const{
         return edges(g);
     }
-    auto edges(vec_map& m)const{
+    auto edges(const vec_map& m)const{
         //find a better algorithm or data structure to avoid search for duplicate
         std::vector<value_type> edgs;
         for(auto& l:m){
@@ -643,7 +643,7 @@ struct EdgeWeightedGraph
         }
         return edgs;
     }
-    auto edges(hash_map& m)const {
+    auto edges(const hash_map& m)const {
         //find a better algorithm or data structure to avoid search for duplicate
         std::vector<value_type> edgs;
         for(auto& l:m){
@@ -652,6 +652,16 @@ struct EdgeWeightedGraph
             }
         }
         return edgs;
+    }
+    auto find_edge(const auto& v1, const auto& v2){
+        const auto& edjlist=g[v1];
+        auto iter = std::find_if(std::begin(edjlist),std::end(edjlist),[&](auto& e){
+            return e.from() == v1 && e.to()==v2;
+        });
+        if(iter != std::end(edjlist)){
+            return *iter;
+        }
+        return value_type{VertexType{},VertexType{},0};
     }
     template<typename Handler>
     void for_each_vertices(const hash_map& m,Handler h)const{
