@@ -35,3 +35,17 @@ sg.add_edge("Abhilash","Pranav");
 sg.add_edge("Abhila","Pranav");
 sg.print(std::cout);
 ```
+Notice the generic nature of the implementaion . With single implementation you achieved wide range of graphs with directed and undirected edges that supports any domain specific type. 
+
+Now let's shift our focus to generic algorithm. Let's see how we can do a depth and breadth first seach using above graph structure
+Lets us capture the relationship among people(captured using above graph) using a DFS
+```
+std::map<std::string,std::string> strparents;
+travers(sg,"Abhilash",GDFS(),[&](auto p,auto c){
+    strparents[c]=p;
+},empty_visitor);
+```
+Travers is a generic function from library that accepts a graph , the start vertex , the search algorithm and two user specfic action that need to be taken whenever 
+1) algorithm visit a vertex.
+2) algorithm enques a child vertex for visit.
+user can choose to provide any of the above two call backs my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationshil between vertices.
