@@ -140,7 +140,10 @@ void MstGraph::timerEvent(QTimerEvent *event)
 void MstGraph::render(QPainter *p)
 {
 
-
+    auto drawText=[&](auto rect, auto text){
+        p->setFont(QFont("Times New Roman",20));
+        p->drawText(rect,text,QTextOption(Qt::AlignCenter));
+    };
     auto row_col=[=,cellw=width()/(2*noofcols),cellh=height()/(2*noofrows)](auto v,auto n){
 
         int ypos=(v/noofcols)*cellh+n;
@@ -191,17 +194,17 @@ void MstGraph::render(QPainter *p)
     drawMst(primIter,primTree, pen);
     p->save();
 
-    p->translate(width()*3/4,height()/4);
-    p->drawText(QPoint(0,0),"Primes MST");
+    p->translate(width()/2,height()/4);
+    drawText(QRect(0,0,width()/2,50),"Primes MST");
     p->restore();
     p->save();
-    p->translate(width()/4,height()*3/4);
-    pen=QPen(Qt::green,3);
-    p->setPen(pen);
-    p->drawText(QPoint(0,0),"Krusk MST");
+
+
+    p->translate(0,height()*3/4);
+    drawText(QRect(0,0,width()/2,50),"Krusk MST");
     p->restore();
     p->translate(width()/2,height()/2);
-    drawMst(krukIter,krukTree, pen);
+    drawMst(krukIter,krukTree, QPen(Qt::green,3));
 
 
 

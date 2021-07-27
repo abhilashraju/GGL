@@ -146,7 +146,7 @@ SpGraph::SpGraph()
     setTitle("Shortest Path");
     resize(700, 700);
     intialiseGraph(std::default_random_engine{r()});
-    m_timerId = startTimer(50);
+    m_timerId = startTimer(100);
 
 }
 void SpGraph::timerEvent(QTimerEvent *event)
@@ -162,8 +162,14 @@ void SpGraph::timerEvent(QTimerEvent *event)
 
 void SpGraph::render(QPainter *p)
 {
-
-
+    auto drawText=[&](auto rect, auto text){
+        p->setFont(QFont("Times New Roman",20));
+        p->drawText(rect,text,QTextOption(Qt::AlignCenter));
+    };
+    p->save();
+    drawText(QRect(0,10,width(),50),"Shortest Path");
+    p->restore();
+    p->translate(0,50);
     auto row_col=[=,cellw=rationr*width()/(ratiodr*noofcols),cellh=rationr*height()/(ratiodr*noofrows)](auto v,auto n){
 
         int ypos=(v/noofcols)*cellh+n;
@@ -202,6 +208,7 @@ void SpGraph::render(QPainter *p)
         p->translate(-ept);
         p->drawPolygon(pt,4);
         p->restore();
+        p->setFont(QFont("Times New Roman",15));
         p->drawText(line.center(),QString("%1").arg(w));
     };
     auto draw_path=[&](auto& path,auto vertexcolor){
