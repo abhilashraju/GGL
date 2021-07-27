@@ -57,6 +57,12 @@ Again it is just a parmeterised version of another generic algorithm. The only d
 using GBFS=BFS_DFS<make_bfs_push>;
 using GDFS=BFS_DFS<make_dfs_push>;
 ```
-See the type alias declaration . The main difference is in its pushing strategy. One pushed new vertices in front while the other put it in back.
+See the type alias declaration . The main difference is in its pushing strategy. One pushes new vertices in front while the other put it in back.
 
+Now the traverse implementation is as simple as below
+```
+inline void travers(auto& g,auto root,auto alg,auto child_handler,auto handler){
+    alg(g,root,child_handler,handler);
+}
+```
 
