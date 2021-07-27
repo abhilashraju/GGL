@@ -23,3 +23,15 @@ g.add_edge(1,5);
 g.add_edge(5,1);
 g.print(std::cout);
 ```
+In the above example we have created a Directed graph that uses adjuscency list with integer vertex type. Library already provides reusable type aliases for most frequently used graphs. You can notice that how easy it is to change Directed Graph in to Undirected one just by changing the declaration of it. 
+Some times you wanted to analyse relationships between entitities using graph algorithms. In those cases the vertex type may not be an integer . It will be an entity represented using your domain type such as Employee or Color. The following example shows how easy it is to create a graph with string vertex type.
+```
+using SGraph=GraphImpl<std::string,undirected>;
+using SDGraph=GraphImpl<std::string,directed>;
+
+SDGraph sg(10);
+sg.add_edge("Abhilash","Abhila");
+sg.add_edge("Abhilash","Pranav");
+sg.add_edge("Abhila","Pranav");
+sg.print(std::cout);
+```
