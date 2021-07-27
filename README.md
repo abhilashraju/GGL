@@ -82,3 +82,4 @@ for(auto& l:map){
 }
 ```
 The connected components is another useful algorithm that accepts a graph and a callback. The callback will be called with the vertex and the id of connected component it belong to . The id is just an integer indicating the current connected component count. So, after  completing the algorithm  you can use the last id as total number of connected component in the graph.
+One good application of connected component and our people graph is that you can easily find out how many different families are there in the graph and  can cluster them based on the family they belong to.
