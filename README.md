@@ -124,6 +124,10 @@ The traverse call looks a bit differnt in this example. Here we are doing two th
 1) capturing the parent child relashonship among vertices.
 2) replacing the content of each visited cell with 'b' . So, after the traversal all cell contents that connected to {3,3} will change its value from 'a' to 'b'
 
-Also note the Vertex type here. It is the index representing the cell position in the matrix.
+ Note the Vertex type usage. It is the index representing the cell position in the matrix. I have used the point number 2 in one of my demo app to change the pixel tansparency.You can see all GUI examples in example folder.
+ 
+ <B> Minimum Spanning Trees </B>
+ So far we have covered generic unweighted graph data structures and basic travesal algorithms. We have a lot more to do in order to cover all graph processing models. I will keep on adding new algorithms and data structure to the library . For now lets talk about one of the completed feature Minimum Spanning Tree( MST )
+As we know in MST model we are trying to figure out the minimum cost edges that are connecting the graphs. In this model we need another kind of graph, called EdgeWeightedGraph, that can hold the weight or cost of taking that edge. In case of Unweighted graph we are only interested in vertices that are connected to a vertex. Since we need to worry about cost of the edge, we need new type Edge . The edge can be either directed or undirected. In case of EdgeWeightedGraph we  store edges instead of vertices in the adjuscency list of a vertex. As usual the vertex type can be any user defined type,depending on your buisiness needs.
 
 
