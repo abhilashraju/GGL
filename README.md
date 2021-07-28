@@ -159,7 +159,8 @@ run(sg);
  ```
  In this example we are caculating MST for a family tree using two well know algorithm Prime's and Kruskal's. You can see the usage of MST algorithms in the run method. The Algorithm accepts graph and a callback . The callback will be triggered whenever algorithm picks a vertex to be added to the tree.
  
- <B>Single Source Shortest Path <B>
+ <B>Single Source Shortest Path </B>
+ 
     The shortest path is another important algorithm that has wide range of applications, from finding the shortest route from a map to reducing size of an image by removing low entropy pixels(Sean Carving>. The graph container we uses here again is an edgeweighted graph but now we have direction to care about. The following code demostrates  how to use shortest path algorithm. 
 
 ```   
