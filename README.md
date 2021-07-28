@@ -151,16 +151,13 @@ auto run=[](auto& g){
     });
 };
 
-EdgeWeightedGraph<int> g(10);
-g.addEdge({1,2,1}).addEdge({3,4,10}).addEdge({3,1,5}).addEdge({4,6,7}).addEdge({6,3,8}).addEdge({4,2,3});
-run(g);
-
 EdgeWeightedGraph<std::string> sg;
 using SEdge=EdgeWeightedGraph<std::string>::Edge;
 sg.addEdge(SEdge("Abhilash","Abhila",10)).addEdge(SEdge("Pranav","Shreya",10)).addEdge(SEdge("Abhila","Shreya",5));
 sg.addEdge(SEdge("Abhilash","Pranav",7)).addEdge(SEdge("Kamalamma","Abhilash",8)).addEdge(SEdge("Abhila","Pranav",3));
 run(sg);
  ```
+ In this example we are caculating MST for a family tree using two well know algorithm Prime's and Kruskal's. You can see the usage of MST algorithms in the run method. The Algorithm accepts graph and a callback . The callback will be triggered whenever algorithm picks a vertex to be added to the tree.
 
 
 
