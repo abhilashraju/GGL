@@ -127,7 +127,40 @@ The traverse call looks a bit differnt in this example. Here we are doing two th
  Note the Vertex type usage. It is the index representing the cell position in the matrix. I have used the point number 2 in one of my demo app to change the pixel tansparency.You can see all GUI examples in example folder.
  
  <B> Minimum Spanning Trees </B>
+ 
  So far we have covered generic unweighted graph data structures and basic travesal algorithms. We have a lot more to do in order to cover all graph processing models. I will keep on adding new algorithms and data structure to the library . For now lets talk about one of the completed feature Minimum Spanning Tree( MST )
 As we know in MST model we are trying to figure out the minimum cost edges that are connecting the graphs. In this model we need another kind of graph, called EdgeWeightedGraph, that can hold the weight or cost of taking that edge. In case of Unweighted graph we are only interested in vertices that are connected to a vertex. Since we need to worry about cost of the edge, we need new type Edge . The edge can be either directed or undirected. In case of EdgeWeightedGraph we  store edges instead of vertices in the adjuscency list of a vertex. As usual the vertex type can be any user defined type,depending on your buisiness needs.
+
+Our EdgeWeightedGraph is parameterised by Vertex type and a bool, that tells if it is directed or undirected.
+The following code gives a type alias for a directed EdgeWeightedGraph.
+```
+template <typename T>
+using DEdgeWeightedGraph=EdgeWeightedGraph<T,true>;
+```
+Though minimum spanning tree does not need directed graph , I simply mentioned about it here just to indroduce a new EdgeWeightedGraph. The DEdgeWeightedGraph will be useful when we talk about shortestpath algorithm.
+The following code demonstrate the usage of MST in the context of finding least intimate relashionship in our family tree.
+```
+auto run=[](auto& g){
+    std::cout<<"from Kruskal\n";
+    m_s_t(m_s_t_kru(),g,[](const auto& e){
+       std::cout<<"edge "<<e.either()<<" "<<e.other(e.either())<<"\n";
+    });
+    std::cout<<"from Primes\n";
+    m_s_t(m_s_t_pri(),g,[](const auto& e){
+       std::cout<<"edge "<<e.either()<<" "<<e.other(e.either())<<"\n";
+    });
+};
+
+EdgeWeightedGraph<int> g(10);
+g.addEdge({1,2,1}).addEdge({3,4,10}).addEdge({3,1,5}).addEdge({4,6,7}).addEdge({6,3,8}).addEdge({4,2,3});
+run(g);
+
+EdgeWeightedGraph<std::string> sg;
+using SEdge=EdgeWeightedGraph<std::string>::Edge;
+sg.addEdge(SEdge("Abhilash","Abhila",10)).addEdge(SEdge("Pranav","Shreya",10)).addEdge(SEdge("Abhila","Shreya",5));
+sg.addEdge(SEdge("Abhilash","Pranav",7)).addEdge(SEdge("Kamalamma","Abhilash",8)).addEdge(SEdge("Abhila","Pranav",3));
+run(sg);
+ ```
+
 
 
