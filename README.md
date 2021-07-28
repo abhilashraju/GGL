@@ -158,6 +158,40 @@ sg.addEdge(SEdge("Abhilash","Pranav",7)).addEdge(SEdge("Kamalamma","Abhilash",8)
 run(sg);
  ```
  In this example we are caculating MST for a family tree using two well know algorithm Prime's and Kruskal's. You can see the usage of MST algorithms in the run method. The Algorithm accepts graph and a callback . The callback will be triggered whenever algorithm picks a vertex to be added to the tree.
+ 
+ <B>Single Source Shortest Path <B>
+    The shortest path is another important algorithm that has wide range of applications, from finding the shortest route from a map to reducing size of an image by removing low entropy pixels(Sean Carving>. The graph container we uses here again is an edgeweighted graph but now we have direction to care about. The following code demostrates  how to use shortest path algorithm. 
 
+```
+auto run=[](auto& g,const auto& start){
+        std::cout<<"Shortest path\n";
+        s_s_shortest_path s_p;
+        using  VertexType = typename std::remove_reference_t<decltype (g)>::VertexType;
+        std::map<VertexType,VertexType> paths;
+        std::map<VertexType,int> distances;
+        s_p(g,start,[&](const auto& v,const auto& distance, const auto& parent){
+            paths[v]=parent;distances[v]=distance;
+
+        });
+        for(auto& p:paths){
+            std::cout<<"Vertex "<<p.first;
+            auto via=p.first;
+            while(via!=paths[via]){
+                via=paths[via];
+                std::cout<<" via "<<via;
+
+            }
+            std::cout<<" with cost "<<distances[p.first]<<"\n";
+        }
+
+    };
+
+    DEdgeWeightedGraph<std::string> sg;
+    using SEdge=DEdgeWeightedGraph<std::string>::value_type;
+    sg.addEdge(SEdge("Abhilash","Abhila",1)).addEdge(SEdge("Pranav","Shreya",10)).addEdge(SEdge("Abhila","Shreya",5))
+    sg.addEdge(SEdge("Abhilash","Pranav",7)).addEdge(SEdge("Kamalamma","Abhilash",8)).addEdge(SEdge("Abhila","Pranav",3));
+    sg.addEdge(SEdge("Pranav","Abhilash",10)).addEdge(SEdge("Pranav","Kamalamma",1));
+    run(sg,"Abhila");
+```
 
 
