@@ -119,6 +119,11 @@ travers(cg,CGVertex{3,3},GDFS(),[&](auto p,auto c){
 printparents(vertexParents,CGVertex{0,2},CGVertex{0,0},[&](auto& v){return cg.to_string(v);});
 cg.printContent(std::cout);
 ```
-The noted aspect in above code is that the setPredicate call . This is an important call for the graph traversal to determine the presence of an edge. Basically this function set the relation between among neighbourhood vertices. In our purticular case it is saying that two negihboring cells are connected if both have 'a' as it's content.
+The noted addition in above code is the setPredicate call . This is an important call for the graph traversal to determine the presence of an edge. Basically this function set the relation between among neighbourhood vertices. In our purticular case it is saying that two negihboring cells are connected if both have 'a' as it's content.
+The traverse call looks a bit differnt in this example. Here we are doing two thing during traversal.
+1) capturing the parent child relashonship among vertices.
+2) replacing the content of each visited cell with 'b' . So, after the traversal all cell contents that connected to {3,3} will change its value from 'a' to 'b'
+
+Also note the Vertex type here. It is the index representing the cell position in the matrix.
 
 
