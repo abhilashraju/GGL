@@ -97,7 +97,7 @@ using CrossMatrix=MatrixGraph<T,typename MatrixIterators<T>::CrossList>;
 template<typename T>
 using GridMatrix=MatrixGraph<T,typename MatrixIterators<T>::GridList>;
 ```
-Once again the Vertex can be any user defined types. Generally this kind of graph comes in image processing use case ,where each vetices represents a pixel or colour. Ther are several problem in image processing that can be solved using BFS , DFS ,connected components or shortest path algorithms running on matrix graph. Colour filling , sean carving etc are examples of that. I have included  one small game application "Guess who" in the demo section, which use DFS and BFS to remove forground pixel to see the picture underneath. 
+The cell contents can be any user defined types. Generally this kind of graph comes in image processing use case ,where each cell represents a pixel or colour. Ther are several problem in image processing that can be solved using BFS , DFS ,connected components or shortest path algorithms running on pixel matrix graph. Colour filling and sean carving  are good examples. I have included  one small game application ,"Guess who", in the demo section, which uses DFS and BFS to remove forground pixel to see the picture underneath. 
 Below code snippet is an example usage of character-matrix graph.It demostrate how we can replace one set of conneted character vertices with another character vertices.
 ```
 using CGVertex=typename CrossMatrix<char>::VertexType;
@@ -119,6 +119,6 @@ travers(cg,CGVertex{3,3},GDFS(),[&](auto p,auto c){
 printparents(vertexParents,CGVertex{0,2},CGVertex{0,0},[&](auto& v){return cg.to_string(v);});
 cg.printContent(std::cout);
 ```
-The noted aspect in above code is that the setPredicate call . This is an important call for the graph traversal to determine the presence of an edge. Basically this function set the relation between negihbouring vertices. In our purticular case it is saying that if the vertex content is 'a' then it  represents an edge.
+The noted aspect in above code is that the setPredicate call . This is an important call for the graph traversal to determine the presence of an edge. Basically this function set the relation between among neighbourhood vertices. In our purticular case it is saying that two negihboring cells are connected if both have 'a' as it's content.
 
 
