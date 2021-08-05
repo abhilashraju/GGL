@@ -162,7 +162,8 @@ run(sg);
  
  <B>Single Source Shortest Path </B>
  
-    The shortest path is another important algorithm that has wide range of applications, from finding the shortest route from a map to reducing size of an image by removing low entropy pixels(Sean Carving>. The graph container we uses here again is an edgeweighted graph but now we have direction to care about. The following code demostrates  how to use shortest path algorithm. 
+ 
+  The shortest path is another important algorithm that has wide range of applications, from finding the shortest route from a map to reducing size of an image by removing low entropy pixels(Sean Carving>. The graph container we uses here again is an edgeweighted graph but now we have direction to care about. The following code demostrates  how to use shortest path algorithm. 
 
 ```   
     DEdgeWeightedGraph<std::string> sg;
