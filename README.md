@@ -8,7 +8,7 @@ Generic and reusable components to solve common graph problems. The implementati
 1) A collection of reusable generic alogorthms that can work with any data type that are compatible with the concepts the algorithm expects
 2) A collection of generic graph containers that reresents different graph models which can be parameterised based on user defined vertex type
 
-By separating the algorithm from the graph structure gives us fexibility in combining them freely and hence generete and n x m solution space fron n + m resusalble components.
+By separating the algorithm from the graph structure gives us fexibility in combining them freely and hence generete an n x m solution space fron n + m resusable components.
 
 Examples
 ```
@@ -52,12 +52,13 @@ Travers is a generic function from library that accepts a graph , the start vert
 User can choose to provide any of the above two callbacks my leaving other empty depending on their requirements. In this purticular example I choose to give one that can capture the parent child relationship between vertices.
 
 Now let's dig a bit deeper into the actual search algorithms
-Again it is just a parmeterised version of another generic algorithm. The only difference between DFS, and BFS is in its usage of stack and queue . Then why not parameterise it?
+The only difference between DFS, and BFS is in its usage of stack and queue . And the main difference between stack and queue is in its pushing strategy. Then why not parameterise it?
+So we can make a generic BFS_DFS algorithm that is prameterised on its pushing stractegy as below
+
 ```
 using GBFS=BFS_DFS<make_bfs_push>;
 using GDFS=BFS_DFS<make_dfs_push>;
 ```
-See the type alias declaration . The main difference is in its pushing strategy. One pushes new vertices in front while the other put it in back.
 
 Now the traverse implementation is as simple as below
 ```
