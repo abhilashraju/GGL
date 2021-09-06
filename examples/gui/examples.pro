@@ -20,7 +20,8 @@ SOURCES =\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
           main.cpp \
-#    ../console/shortest_path.cpp
+ #    ../console/shortest_path.cpp\
+#    ../console/tree_traversals.cpp
 
 
 SOURCES +=rasterwindow.cpp
@@ -37,9 +38,11 @@ HEADERS += \
     ../../src/priorityqueue.hpp \
     ../../src/trie.hpp \
     ../../src/union_find.hpp\
+    ../../src/geometricalgorithms.hpp\
     rasterwindow.h\
      dfs_bfs_gui.cpp \
      gs_apps.cpp \
      mst_gui.cpp \ \
-    shortest_path_gui.hpp
+    shortest_path_gui.hpp\
+    convex_hull_gui.cpp
 

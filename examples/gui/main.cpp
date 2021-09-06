@@ -25,14 +25,16 @@ SOFTWARE.
 #include "dfs_bfs_gui.cpp"
 #include "mst_gui.cpp"
 #include "shortest_path_gui.hpp"
+#include "convex_hull_gui.cpp"
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
 //    MetrixGraphsUI graph;
 //    MstGraph graph;
-    GraphUi graph;
+//    GraphUi graph;
 //      SpGraph graph;
+    Plane graph;
     graph.show();
 
     return app.exec();

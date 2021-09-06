@@ -15,7 +15,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 # Add an executable
 set(SOURCES
-    examples/console/graphs.cpp
+    # examples/console/graphs.cpp
+    examples/console/convex_hull.cpp
     # examples/console/mst.cpp
     # examples/console/priorityqueue.cpp
     # examples/console/trie.cpp
