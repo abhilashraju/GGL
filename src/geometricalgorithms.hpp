@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <algorithm>
 #include <cmath>
@@ -18,14 +19,14 @@ namespace GGL{
         }
     };
     
-    int ccw(const auto& f, const auto& s, const auto& t){
+    inline int ccw(const auto& f, const auto& s, const auto& t){
         using Vec =decltype(f-s);
         Vec fs = s-f;
         Vec ft = t-f;
         auto area = fs.x()*ft.y() -fs.y()*ft.x();
         return area;
     }
-    float polar(const auto& a , const auto& b){
+    inline float polar(const auto& a , const auto& b){
         using Vec =decltype(a-b);
         Vec ab=b-a;
         if(ab.y()==0) return 0;
@@ -34,7 +35,7 @@ namespace GGL{
         return v;
     }
     template<typename Point>
-    auto convex_hull( std::vector<Point>  points){
+    inline auto convex_hull( std::vector<Point>  points){
         if(points.size()<=2) return points;
         std::vector<Point> res;
         std::sort(begin(points),end(points),[](auto a , auto b){ return a.y() < b.y();});

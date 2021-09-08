@@ -19,7 +19,8 @@ SOURCES =\
 #        ../console/trie.cpp\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
-          main.cpp \
+#          main.cpp \
+          ../console/tree_sorts.cpp\
  #    ../console/shortest_path.cpp\
 #    ../console/tree_traversals.cpp
 
