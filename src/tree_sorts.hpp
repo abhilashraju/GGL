@@ -2,18 +2,23 @@
 #include <memory>
 #include <algorithm>
 #include <memory>
+
 namespace GGL{
+    
     template <typename Key , typename Value>
     struct BST
     {
         using value_type =Value;
         using key_type = Key;
+        constexpr static bool RED=true;
+        constexpr static bool BLACK=false;
         struct Node{
             value_type value;
             key_type key;
             int count{1};
             std::unique_ptr<Node> left{};
             std::unique_ptr<Node> right{};
+            bool color{RED};
             Node(const key_type& k, const value_type& v):key(k),value(v){}
             friend auto& operator<<(auto& os, const Node& n){
                 os<<"{ "<<n.key<<" , "<<n.value<<"} ";
@@ -21,6 +26,17 @@ namespace GGL{
             }
         };
         std::unique_ptr<Node> root;
+         
+        size_t height(){
+            return height(root.get());
+        }
+        size_t height(Node* n){
+            if(n){
+                return 1+std::max(height(n->left.get()),height(n->right.get()));
+            }
+            return 0;
+        }
+        //printing end
         void insert(const key_type&  k, const value_type& v){
             root=put(root,k,v);
         }
@@ -28,6 +44,12 @@ namespace GGL{
             if(node) 
                 return node->count;
             return 0;
+        }
+        bool isRed(auto& node){
+            if(node){
+                return node->color==RED;
+            }
+            return false;
         }
         std::unique_ptr<Node> put(auto& node,const key_type& k, const value_type& v){
             if(!node){
@@ -40,6 +62,9 @@ namespace GGL{
             }else{
                 node->value=v;
             }
+            if(!isRed(node->left) && isRed(node->right)) node=std::move(rotateleft(node));
+            if(isRed(node->left) && isRed(node->left->left)) node=std::move(rotateright(node));
+            if(isRed(node->left) && isRed(node->right)) node=std::move(invertcolor(node));
             node->count = 1+size(node->left)+size(node->right);
             return std::move(node);
         }
@@ -271,6 +296,28 @@ namespace GGL{
                 node->right=deleteimpl(node->right,key);
             }
             node->count=1+size(node->left)+size(node->right);
+            return std::move(node);
+        }
+
+        auto rotateleft(auto& node){
+            auto temp=std::move(node->right);
+            std::swap(temp->color,node->color);
+            node->right=std::move(temp->left);
+            temp->left=std::move(node);
+
+            return std::move(temp);
+        }
+        auto rotateright(auto& node){
+            auto temp=std::move(node->left);
+            std::swap(temp->color,node->color);
+            node->left=std::move(temp->right);
+            temp->right=std::move(node);
+            return std::move(temp);
+        }
+        auto invertcolor(auto& node){
+            node->left->color=BLACK;
+            node->right->color=BLACK;
+            node->color=RED;
             return std::move(node);
         }
     };
