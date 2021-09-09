@@ -20,7 +20,8 @@ SOURCES =\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
 #          main.cpp \
-          ../console/tree_sorts.cpp\
+#          ../console/tree_sorts.cpp\
+         ../console/interval_tree.cpp\
  #    ../console/shortest_path.cpp\
 #    ../console/tree_traversals.cpp
 

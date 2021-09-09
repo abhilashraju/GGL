@@ -20,6 +20,7 @@ int main (){
     }
     cout <<"\n";
     cout<<bst.ceil(10).second <<" "<<bst.floor(10).second<<"\n";
+    cout<<bst.rank(6) <<" "<<bst.rank(11)<<"\n";
 
     Tree_Utilities<BST<int , string>>::print(bst);
     bst.delete_key(11);

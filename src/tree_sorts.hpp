@@ -5,8 +5,8 @@
 
 namespace GGL{
     
-    template <typename Key , typename Value>
-    struct BST
+    template <typename Key , typename Value,typename Meta>
+    struct BST_IMPL
     {
         using value_type =Value;
         using key_type = Key;
@@ -15,7 +15,7 @@ namespace GGL{
         struct Node{
             value_type value;
             key_type key;
-            int count{1};
+            Meta metaData_;
             std::unique_ptr<Node> left{};
             std::unique_ptr<Node> right{};
             bool color{RED};
@@ -24,6 +24,7 @@ namespace GGL{
                 os<<"{ "<<n.key<<" , "<<n.value<<"} ";
                 return os;
             }
+            auto& metaData(){return metaData_;}
         };
         std::unique_ptr<Node> root;
          
@@ -36,15 +37,11 @@ namespace GGL{
             }
             return 0;
         }
-        //printing end
+        
         void insert(const key_type&  k, const value_type& v){
             root=put(root,k,v);
         }
-        auto size(auto& node)const{
-            if(node) 
-                return node->count;
-            return 0;
-        }
+        
         bool isRed(auto& node){
             if(node){
                 return node->color==RED;
@@ -53,7 +50,9 @@ namespace GGL{
         }
         std::unique_ptr<Node> put(auto& node,const key_type& k, const value_type& v){
             if(!node){
-                return std::make_unique<Node>(k,v);
+                auto n= std::make_unique<Node>(k,v);
+                Meta::updateData(n.get(),n->left.get(),n->right.get());
+                return n;
             }
             if(k < node->key ){
                 node->left=std::move(put(node->left,k,v));
@@ -65,7 +64,7 @@ namespace GGL{
             if(!isRed(node->left) && isRed(node->right)) node=std::move(rotateleft(node));
             if(isRed(node->left) && isRed(node->left->left)) node=std::move(rotateright(node));
             if(isRed(node->left) && isRed(node->right)) node=std::move(invertcolor(node));
-            node->count = 1+size(node->left)+size(node->right);
+            Meta::updateData(node.get(),node->left.get(),node->right.get());
             return std::move(node);
         }
         Node* find(const auto& node,const key_type& k)const{
@@ -90,25 +89,11 @@ namespace GGL{
             }
             return value_type{};
         }
-        int rank(const key_type& k){
-            return rank(root,k);
-        }
-        int rank(auto& node, const key_type& k){
-            if(!node){
-                return std::numeric_limits<int>::min();
-            }
-            if(k < node->key  ){
-                return rank(node->left,k);
-            }
-            if(k >node->key ){
-                return 1+size(node->left)+rank(node->right,k);
-            }
-            return 1+size(node->left);
-        }
+        
         struct iterator{
-            BST* tree{nullptr};
+            BST_IMPL* tree{nullptr};
             Node* node{nullptr};
-            iterator(BST* t,Node* n):tree(t),node(n){}
+            iterator(BST_IMPL* t,Node* n):tree(t),node(n){}
             iterator& operator++(){
                 node=tree->successor(node);
                 return *this;
@@ -267,7 +252,9 @@ namespace GGL{
                 return std::move(node->right);
         
             node->left=delete_min(node->left);
-            node->count = 1+ size(node->left)+size(node->right);
+            
+            Meta::updateData(node.get(),node->left.get(),node->right.get());
+            
             return std::move(node);
         }
         void delete_key(const key_type& k){
@@ -295,7 +282,8 @@ namespace GGL{
             else if(node->right){
                 node->right=deleteimpl(node->right,key);
             }
-            node->count=1+size(node->left)+size(node->right);
+            
+            Meta::updateData(node.get(),node->left.get(),node->right.get());
             return std::move(node);
         }
 
@@ -319,6 +307,44 @@ namespace GGL{
             node->right->color=BLACK;
             node->color=RED;
             return std::move(node);
+        }
+    };
+    struct RankFinder{
+        int count{1};
+        static int getCount(auto node){
+            if(node){
+                return node->metaData().count;
+            }
+            return 0;
+        }
+        static int updateData(auto node, auto left , auto right){
+            node->metaData().count = 1+getCount(left)+getCount(right);
+            return node->metaData().count;
+        }
+        
+        
+        static int rank(auto node, const auto& k){
+            if(!node){
+                return std::numeric_limits<int>::min();
+            }
+            if(k < node->key  ){
+                return rank(node->left.get(),k);
+            }
+            if(k >node->key ){
+                return 1+getCount(node->left.get())+rank(node->right.get(),k);
+            }
+            return 1+getCount(node->left.get());
+        }
+    };
+    template<typename Key, typename Value>
+    struct BST:BST_IMPL<Key,Value,RankFinder>{
+        using BASE = BST_IMPL<Key,Value,RankFinder>;
+        using key_type = typename BASE::key_type;
+        auto size(auto& node)const{
+            return RankFinder::getCount(BASE::root.get());
+        }
+        int rank(const key_type& k){
+            return RankFinder::rank(BASE::root.get(),k);
         }
     };
 }

@@ -4,7 +4,7 @@
 #include <vector>
 #include <deque>
 namespace GGL{
-    template<typename Tree>
+    template<typename Tree ,size_t fixeddatasize=5>
     struct Tree_Utilities{
        using Node = typename Tree::Node;
        using value_type=typename Tree::value_type;
@@ -12,7 +12,7 @@ namespace GGL{
         static void print(Tree& tree){
             int level = tree.height();
 
-            int fixeddatasize=5;
+
             auto center_aligned = [&](int v,std::string_view str){
 
                 int padding =0;
@@ -44,7 +44,7 @@ namespace GGL{
             while(level>=0){
                  
                 for(int children=0; children<std::pow(2,nodelevel-level) ;children++){
-                    center_aligned(std::pow(2,level+2)*2,std::to_string(levels_array[nodelevel-level][children].first));
+                    center_aligned(std::pow(2,level+3)*2,std::to_string(levels_array[nodelevel-level][children].second));
                 }
                 std::cout<<"\n\n";
                 level--;

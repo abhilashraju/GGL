@@ -17,7 +17,9 @@ endif()
 set(SOURCES
     # examples/console/graphs.cpp
     # examples/console/convex_hull.cpp
-    examples/console/tree_sorts.cpp
+    # examples/console/tree_sorts.cpp
+    examples/console/interval_tree.cpp
+
     # examples/console/mst.cpp
     # examples/console/priorityqueue.cpp
     # examples/console/trie.cpp
