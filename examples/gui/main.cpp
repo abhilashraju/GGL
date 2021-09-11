@@ -26,6 +26,7 @@ SOFTWARE.
 #include "mst_gui.cpp"
 #include "shortest_path_gui.hpp"
 #include "convex_hull_gui.cpp"
+#include "sorts_gui.cpp"
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
@@ -34,7 +35,8 @@ int main(int argc, char **argv)
 //    MstGraph graph;
 //    GraphUi graph;
 //      SpGraph graph;
-    Plane graph;
+//    Plane graph;
+    SortView graph;
     graph.show();
 
     return app.exec();

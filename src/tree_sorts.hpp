@@ -82,6 +82,14 @@ namespace GGL{
         bool contains(const key_type& k)const {
             return find(root,k) != nullptr;
         }
+        value_type& operator[](const key_type& k){
+            auto n =find(root ,k);
+            if(n){
+                return n->value;
+            }
+            insert(k,value_type{});
+            return find(root,k)->value;
+        }
         value_type get(const key_type& k)const {
             auto n = find(root,k);
             if(n){
