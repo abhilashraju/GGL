@@ -20,6 +20,7 @@ SOURCES =\
 #        ../console/union_find.cpp\
 #        ../console/mst.cpp\
           main.cpp \
+#          ../console/sorts.cpp\
 #          ../console/tree_sorts.cpp\
 #         ../console/interval_tree.cpp\
  #    ../console/shortest_path.cpp\
@@ -41,10 +42,12 @@ HEADERS += \
     ../../src/trie.hpp \
     ../../src/union_find.hpp\
     ../../src/geometricalgorithms.hpp\
+    ../../src/merge_sort.hpp\
     rasterwindow.h\
      dfs_bfs_gui.cpp \
      gs_apps.cpp \
-     mst_gui.cpp \ \
+     mst_gui.cpp \
+     sorts_gui.cpp\
     shortest_path_gui.hpp\
     convex_hull_gui.cpp
 

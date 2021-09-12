@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "quick_sort.hpp"
-
+#include "merge_sort.hpp"
 #include "rasterwindow.h"
 #include <random>
 #include <cmath>
@@ -55,15 +55,18 @@ void SortView::intialiseGraph()
       sortsequences.clear();
       std::vector<int> v(50);
       std::generate(v.begin(), v.end(), [n = 0] () mutable { return n++; });
-      qsort(v,std::less<int>{},[&](auto& f, auto& s){
-        //   std::vector<int> currentframe;
+      shuffle(v);
+      auto tracer=[&](auto& f, auto& s){
+
           SortTracker currentframe;
           std::copy(begin(v),end(v),std::back_inserter(currentframe.seq));
           currentframe.first=f;
           currentframe.second=s;
           sortsequences.push_back(currentframe);
-          std::swap(f,s);
-      });
+
+      };
+      merge_sort(v,std::less<int>{},tracer);
+//      qsort(v,std::less<int>{},tracer);
       iter=begin(sortsequences);
 }
 SortView::SortView()
@@ -101,7 +104,7 @@ void SortView::render(QPainter *p)
         p->drawRect(rect);
     };
     p->setPen(QPen(Qt::red));
-    drawText(QRect(0,25,width(),50),"Quick Sort");
+    drawText(QRect(0,25,width(),50),"Merge Sort");
     if(iter != end(sortsequences)){
         auto& frame= *iter;
         int width =10;

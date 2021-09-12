@@ -1,9 +1,9 @@
 #include "quick_sort.hpp"
+#include "merge_sort.hpp"
 #include <vector>
 #include <iostream>
 #include <utility>
-int  main()
-{
+void testqsort(){
     using namespace GGL;
     using namespace std;
     std::vector<int> v{1 , 4, 5, 6 ,3, 9, 5,3};
@@ -20,5 +20,29 @@ int  main()
     };
     qsort(v,std::less<int>{},swapper);
     print();
+}
+void testmergesort(){
+    using namespace GGL;
+    using namespace std;
+    std::vector<int> v{1 , 4, 5, 6 ,3, 9, 5,3};
+    shuffle(v);
+    auto print = [&](){
+         for(auto i:v){
+            cout <<i<<" ";
+        }
+        cout <<"\n";
+    };
+    auto swapper=[&](auto& first,auto& second){
+        print();
+
+
+    };
+    merge_sort(v,std::less<int>{},swapper);
+    print();
+}
+int  main()
+{
+//    testqsort();
+    testmergesort();
     return 0;
 }

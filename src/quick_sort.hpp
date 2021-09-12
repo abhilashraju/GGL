@@ -11,7 +11,7 @@ namespace GGL{
              std::swap(range[i],range[r]);
         }
     }
-    auto partition(auto beg, auto end, auto comp,auto swapper){
+    auto partition(auto beg, auto end, auto comp,auto tracer){
         auto pivot =beg;
         auto endpoint=end;
         while (true)
@@ -19,22 +19,25 @@ namespace GGL{
             while(beg < end && comp(*beg,*pivot)) beg++;
             while(beg < end && !comp(*end,*pivot)) end--;
             if(beg < end){
-                swapper(*beg, *end);
+                tracer(*beg, *end);
+                std::swap(*beg,*end);
+
             }else{break;}
         }
-        swapper(*pivot,*end);
+        tracer(*pivot,*end);
+        std::swap(*pivot,*end);
         return beg;
     }
-    void qsortimpl(auto beg, auto end,auto comp,auto swapper){
+    void qsortimpl(auto beg, auto end,auto comp,auto tracer){
         if ( beg >= end) return;
-        auto partpoint = partition(beg,end ,comp,swapper);
-        qsortimpl(beg , partpoint-1,comp,swapper);
-        qsortimpl(partpoint+1 , end,comp,swapper);
+        auto partpoint = partition(beg,end ,comp,tracer);
+        qsortimpl(beg , partpoint-1,comp,tracer);
+        qsortimpl(partpoint+1 , end,comp,tracer);
            
     }
-    void qsort(auto& range, auto comp,auto swapper){
+    void qsort(auto& range, auto comp,auto tracer){
         shuffle(range);
-        qsortimpl(begin(range), end(range)-1,comp,swapper);
+        qsortimpl(begin(range), end(range)-1,comp,tracer);
     }
     
 }
