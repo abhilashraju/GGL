@@ -19,7 +19,8 @@ set(SOURCES
     # examples/console/convex_hull.cpp
     # examples/console/tree_sorts.cpp
     # examples/console/interval_tree.cpp
-    examples/console/sorts.cpp
+    # examples/console/sorts.cpp
+    examples/console/string_search.cpp
 
     # examples/console/mst.cpp
     # examples/console/priorityqueue.cpp

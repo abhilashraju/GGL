@@ -43,6 +43,7 @@ HEADERS += \
     ../../src/union_find.hpp\
     ../../src/geometricalgorithms.hpp\
     ../../src/merge_sort.hpp\
+    binary_tree_gui.hpp \
     rasterwindow.h\
      dfs_bfs_gui.cpp \
      gs_apps.cpp \

@@ -16,8 +16,8 @@ namespace GGL{
             value_type value;
             key_type key;
             Meta metaData_;
-            std::unique_ptr<Node> left{};
-            std::unique_ptr<Node> right{};
+            std::unique_ptr<Node> left_{};
+            std::unique_ptr<Node> right_{};
             bool color{RED};
             Node(const key_type& k, const value_type& v):key(k),value(v){}
             friend auto& operator<<(auto& os, const Node& n){
@@ -25,21 +25,27 @@ namespace GGL{
                 return os;
             }
             auto& metaData(){return metaData_;}
+            Node* left(){return left_.get();}
+            Node* right(){return right_.get();}
         };
         std::unique_ptr<Node> root;
-         
+        Node* getRoot(){return root.get();}
+        void clear(){
+            root.reset(nullptr);
+        }
         size_t height(){
             return height(root.get());
         }
         size_t height(Node* n){
             if(n){
-                return 1+std::max(height(n->left.get()),height(n->right.get()));
+                return 1+std::max(height(n->left_.get()),height(n->right_.get()));
             }
             return 0;
         }
         
         void insert(const key_type&  k, const value_type& v){
             root=put(root,k,v);
+            root->color=BLACK;
         }
         
         bool isRed(auto& node){
@@ -51,20 +57,20 @@ namespace GGL{
         std::unique_ptr<Node> put(auto& node,const key_type& k, const value_type& v){
             if(!node){
                 auto n= std::make_unique<Node>(k,v);
-                Meta::updateData(n.get(),n->left.get(),n->right.get());
+                Meta::updateData(n.get(),n->left_.get(),n->right_.get());
                 return n;
             }
             if(k < node->key ){
-                node->left=std::move(put(node->left,k,v));
+                node->left_=std::move(put(node->left_,k,v));
             }else if( k > node->key ){
-                node->right=std::move(put(node->right,k,v));
+                node->right_=std::move(put(node->right_,k,v));
             }else{
                 node->value=v;
             }
-            if(!isRed(node->left) && isRed(node->right)) node=std::move(rotateleft(node));
-            if(isRed(node->left) && isRed(node->left->left)) node=std::move(rotateright(node));
-            if(isRed(node->left) && isRed(node->right)) node=std::move(invertcolor(node));
-            Meta::updateData(node.get(),node->left.get(),node->right.get());
+            if(!isRed(node->left_) && isRed(node->right_)) node=std::move(rotateleft(node));
+            if(isRed(node->left_) && isRed(node->left_->left_)) node=std::move(rotateright(node));
+            if(isRed(node->left_) && isRed(node->right_)) node=std::move(invertcolor(node));
+            Meta::updateData(node.get(),node->left_.get(),node->right_.get());
             return std::move(node);
         }
         Node* find(const auto& node,const key_type& k)const{
@@ -72,9 +78,9 @@ namespace GGL{
                 return nullptr;
             }
             if( k < node->key ){
-                return find(node->left,k);
+                return find(node->left_,k);
             }else if( k >node->key ){
-                return find(node->right,k);
+                return find(node->right_,k);
             }
             return node.get();
             
@@ -142,8 +148,8 @@ namespace GGL{
         }
         Node* minimumnode(Node* node){
             if(!node) nullptr;
-            if(node->left){
-                return minimumnode(node->left.get());
+            if(node->left_){
+                return minimumnode(node->left_.get());
             }
             return node;
         }
@@ -156,14 +162,14 @@ namespace GGL{
         }
         Node* maximumnode(Node* node){
             if(!node) nullptr;
-            if(node->right){
-                return maximumnode(node->right.get());
+            if(node->right_){
+                return maximumnode(node->right_.get());
             }
             return node;
         }
         auto successor(Node* node){
-            if(node->right){
-               return minimumnode(node->right.get());
+            if(node->right_){
+               return minimumnode(node->right_.get());
             }
             return successor(node->key);
         }
@@ -173,9 +179,9 @@ namespace GGL{
         Node* successor(Node* node,const key_type& key){
             if(!node) return nullptr;
             if(node->key <= key){
-               return successor(node->right.get(),key);
+               return successor(node->right_.get(),key);
             }
-            auto n= successor(node->left.get(),key);
+            auto n= successor(node->left_.get(),key);
             if(n) 
                 return n;
             return node;
@@ -185,17 +191,17 @@ namespace GGL{
             return predecessor(root.get(),key);
         }
         auto predecessor(Node* node){
-            if(node->left){
-               return maximumnode(node->left.get());
+            if(node->left_){
+               return maximumnode(node->left_.get());
             }
             return predecessor(node->key);
         }
         Node* predecessor(Node* node,const key_type& key){
             if(!node) return nullptr;
             if(node->key >= key){
-               return predecessor(node->left.get(),key);
+               return predecessor(node->left_.get(),key);
             }
-            auto n= predecessor(node->right.get(),key);
+            auto n= predecessor(node->right_.get(),key);
             if(n) 
                 return n;
             return node;
@@ -213,9 +219,9 @@ namespace GGL{
             if(node->key == key) 
                 return node;
             if(node->key < key){
-                return ceilnode(node->right.get(),key);
+                return ceilnode(node->right_.get(),key);
             }
-            auto n=ceilnode(node->left.get(),key);
+            auto n=ceilnode(node->left_.get(),key);
             if(n) 
                 return n;
             return node;
@@ -234,9 +240,9 @@ namespace GGL{
             if(node->key == key) 
                 return node;
             if(node->key > key){
-                return floornode(node->left.get(),key);
+                return floornode(node->left_.get(),key);
             }
-            auto n=floornode(node->right.get(),key);
+            auto n=floornode(node->right_.get(),key);
             if(n) 
                 return n;
             return node;
@@ -248,20 +254,20 @@ namespace GGL{
         }
         void visitimpl(Node* node,auto& func){
             if(!node) return;
-            visitimpl(node->left.get(),func);
+            visitimpl(node->left_.get(),func);
             func(node->key,node->value);
-            visitimpl(node->right.get(),func);
+            visitimpl(node->right_.get(),func);
         }
         void delete_min(){
             root=delete_min(root);
         }
         auto delete_min(auto& node){
-            if(!node->left) 
-                return std::move(node->right);
+            if(!node->left_)
+                return std::move(node->right_);
         
-            node->left=delete_min(node->left);
+            node->left_=delete_min(node->left_);
             
-            Meta::updateData(node.get(),node->left.get(),node->right.get());
+            Meta::updateData(node.get(),node->left_.get(),node->right_.get());
             
             return std::move(node);
         }
@@ -270,49 +276,49 @@ namespace GGL{
         }
         auto deleteimpl(auto& node, const key_type& key){
             if(key == node->key){
-                if(node->left && node->right){
+                if(node->left_ && node->right_){
                     auto suc=successor(node.get());
                     node->value=suc->value;
                     node->key=suc->key;
-                    node->right=delete_min(node->right);
+                    node->right_=delete_min(node->right_);
                 }
-                else if(node->left){
-                    return std::move(node->left);
+                else if(node->left_){
+                    return std::move(node->left_);
                 }
-                else if(node->right){
-                    return std::move(node->right);
+                else if(node->right_){
+                    return std::move(node->right_);
                 }
                 return std::unique_ptr<Node>();
             }
-            else if(key < node->key && node->left){
-                node->left=deleteimpl(node->left,key);
+            else if(key < node->key && node->left_){
+                node->left_=deleteimpl(node->left_,key);
             }
-            else if(node->right){
-                node->right=deleteimpl(node->right,key);
+            else if(node->right_){
+                node->right_=deleteimpl(node->right_,key);
             }
             
-            Meta::updateData(node.get(),node->left.get(),node->right.get());
+            Meta::updateData(node.get(),node->left_.get(),node->right_.get());
             return std::move(node);
         }
 
         auto rotateleft(auto& node){
-            auto temp=std::move(node->right);
+            auto temp=std::move(node->right_);
             std::swap(temp->color,node->color);
-            node->right=std::move(temp->left);
-            temp->left=std::move(node);
+            node->right_=std::move(temp->left_);
+            temp->left_=std::move(node);
 
             return std::move(temp);
         }
         auto rotateright(auto& node){
-            auto temp=std::move(node->left);
+            auto temp=std::move(node->left_);
             std::swap(temp->color,node->color);
-            node->left=std::move(temp->right);
-            temp->right=std::move(node);
+            node->left_=std::move(temp->right_);
+            temp->right_=std::move(node);
             return std::move(temp);
         }
         auto invertcolor(auto& node){
-            node->left->color=BLACK;
-            node->right->color=BLACK;
+            node->left_->color=BLACK;
+            node->right_->color=BLACK;
             node->color=RED;
             return std::move(node);
         }
@@ -336,20 +342,23 @@ namespace GGL{
                 return std::numeric_limits<int>::min();
             }
             if(k < node->key  ){
-                return rank(node->left.get(),k);
+                return rank(node->left_.get(),k);
             }
             if(k >node->key ){
-                return 1+getCount(node->left.get())+rank(node->right.get(),k);
+                return 1+getCount(node->left_.get())+rank(node->right_.get(),k);
             }
-            return 1+getCount(node->left.get());
+            return 1+getCount(node->left_.get());
         }
     };
     template<typename Key, typename Value>
     struct BST:BST_IMPL<Key,Value,RankFinder>{
         using BASE = BST_IMPL<Key,Value,RankFinder>;
         using key_type = typename BASE::key_type;
-        auto size(auto& node)const{
-            return RankFinder::getCount(BASE::root.get());
+        auto size(auto node)const{
+            return RankFinder::getCount(node);
+        }
+        auto size()const{
+            return size(BASE::root.get());
         }
         int rank(const key_type& k){
             return RankFinder::rank(BASE::root.get(),k);

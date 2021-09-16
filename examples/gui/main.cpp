@@ -27,6 +27,7 @@ SOFTWARE.
 #include "shortest_path_gui.hpp"
 #include "convex_hull_gui.cpp"
 #include "sorts_gui.cpp"
+#include "binary_tree_gui.hpp"
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
@@ -36,7 +37,8 @@ int main(int argc, char **argv)
 //    GraphUi graph;
 //      SpGraph graph;
 //    Plane graph;
-    SortView graph;
+//    SortView graph;
+    BinTree graph;
     graph.show();
 
     return app.exec();
