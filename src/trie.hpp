@@ -31,6 +31,7 @@ SOFTWARE.
 #include <deque>
 #include <iostream>
 #include <numeric>
+
 namespace GGL {
 template <typename Key, typename Value>
 struct Flatmap
@@ -69,149 +70,155 @@ bool isValid(const std::string& v){
 bool isValid(bool v){
     return v;
 }
-template<typename Key=std::string,typename Value=std::string>
-struct Trie
-{
-    struct TrieNode;
-    using NodePtr=std::unique_ptr<TrieNode>;
-    using NodeKey=typename Key::value_type;
-    template <typename k, typename v>
-    using Flatmap=Flatmap<k,v>;
-    struct TrieNode{
-        Flatmap<NodeKey,NodePtr> children;
-        Value value;
-        NodeKey key;
-        bool contains(const NodeKey& k){
-            return children.contains(k);
-        }
-        NodePtr& operator[](const NodeKey& k){
-            return children[k];
-        }
-    };
-    void insert(const Key& key, const Value& value){
-        Key currentkey =key;
-        auto currentNode=root.get();
-        while(!currentkey.empty()){
-            NodeKey k = currentkey[0];
-            if(currentNode->contains(k)){
-                currentNode=((*currentNode)[k]).get();
-            }
-            else{
-                ((*currentNode)[k])=std::make_unique<TrieNode>(TrieNode{{},Value{},k});
-                currentNode=((*currentNode)[k]).get();
-            }
-            currentkey=currentkey.substr(1);
-            if(currentkey.empty()){
-                currentNode->value=value;
-            }
-        }
-    }
-    void print(){
 
-        std::deque<TrieNode*> queue{root.get()};
-        while(queue.size()){
-            auto current = queue.front();
-            for(auto& c:current->children){
-                std::cout<<"   "<<c.second->key<<"   ";
-                queue.push_back(c.second.get());
-            }
-            std::cout<<"\n";
-            queue.pop_front();
+template<typename Node,typename Container>
+  struct node_maker{
+        std::unique_ptr<Node> operator()(char c)const{
+                auto n= std::make_unique<Node>();
+                n->c=c;
+                return n;
         }
-    }
-    std::vector<Key> get_path_list(TrieNode* node){
-        std::vector<Key> keys;
-        if(node){
-            auto key = node->key;
-            if(node->children.size()){
-                std::accumulate(begin(node->children),end(node->children),std::back_inserter(keys),[&](auto& iter, auto& v){
-                    auto c= v.second.get();
-                    auto clist =get_path_list(c);
-
-                    std::vector<Key> ckeys;
-                    if(isValid(node->value)){
-                        ckeys.emplace_back(Key(1,key));
-                    }
-                    std::transform(begin(clist),end(clist),std::back_inserter(ckeys),[&](auto& cv){
-                        return key+cv;
-                    });
-                    for(auto& ck:ckeys){
-                        *iter=ck;
-                    }
-                    return iter;
-                });
-            }else{
-
-                keys.push_back(Key(1,key));
+  };
+  
+  template<typename Key,typename Value, template <typename T> class Container>
+  struct TrieImpl{
+     
+      using link_type=typename Key::value_type;
+      struct Node;
+      using container_type =Container<std::unique_ptr<Node>>;
+      static constexpr link_type start='a';
+      using value_type = Value;
+      struct Node{
+            container_type links;
+            value_type value{};
+            link_type c{'*'};
+            Node(const value_type& v=value_type{}):value(v){ links.initialize();}
+      };
+      std::unique_ptr<Node> root{node_maker<Node,container_type>()(' ')};
+      std::unique_ptr<Node> put(auto& node, const auto& key, const auto& value ,auto current){
+          if(current == key.size()){
+            node->value=value;
+            return std::move(node);
+          }
+          auto& l=node->links[key[current]];
+          if(!l){
+              l=node_maker<Node,container_type>()(key[current]);
+          }
+          
+         
+         l=put(l,key,value,current+1);
+         return std::move(node);
+      }
+      void insert(const Key& key,const value_type& value){
+         root=put(root,key, value,0);
+      }
+      Node* get(Node* node,const Key& key,auto current){
+          if(!node) return nullptr;
+          if(current == key.size()){
+              return node;
+          }
+         
+          return get(node->links[key[current]].get(),key,current+1);
+      }
+      value_type get(const Key& key){
+          auto node=get(root.get(),key,0);
+          if(node){
+             return node->value;
+          }
+           return value_type{};
+      }
+      auto keys(){
+          std::vector<Key> keys;
+          keys_impl(root.get(),keys,"");
+          return keys;
+      }
+      void keys_impl(Node* node, std::vector<Key>& keys,const std::string& current){
+          if(!node) return;
+          if(isValid(node->value)) keys.push_back(current);
+          
+          for(auto& v:node->links){
+              keys_impl(v.get(),keys,current+(v?v->c:' '));
+          }
+      }
+      auto suffixes(auto& prefix){
+          auto node=get(root.get(),prefix,0);
+          std::vector<Key> keys;
+          keys_impl(node,keys,prefix);
+          return keys;
+      }
+      auto levelarray(){
+          std::vector<std::vector<link_type>> array;
+          levelarray(root,array,0);
+          return array;
+      }
+      auto levelarray(auto& node, auto& arr,auto index){
+            if(!node) return;
+            if(arr.size()<=index) arr.push_back(std::vector<link_type>());
+             arr[index].push_back(node->c);
+            for(auto& v:node->links){  
+                levelarray(v,arr,index+1);
             }
-
+      }
+       auto print(auto& os){
+          auto arr= levelarray();
+          for(auto& v:arr){
+              for(auto& c:v){
+                  os<<c<<" ";
+              }
+              os<<"\n";
+          }
         }
-        return keys;
-    }
-    std::vector<Key> get_starts_with(const Key& prefix){
-        std::vector<Key> keys;
-        auto node=findNode(prefix);
-        if(node){
-            if(isValid(node->value)){
-                keys.push_back(prefix);
-            }
-            for(auto& suff:get_suffix_list(node)){
-                keys.push_back(prefix+suff);
-            }
-        }
-        return keys;
-    }
-    std::vector<Key> get_suffix_list(TrieNode* node){
-        std::vector<Key> keys;
-        if(node){
+      
 
-            for(auto& c: node->children){
-                for(auto& suff:get_path_list(c.second.get())){
-                    keys.push_back(suff);
+  };
+   template<typename T>
+   struct TernaryContainer{
+       std::array<T,3> container;
+       void initialize(){}
+       T& operator[](char c){
+          
+          if(!container[1] || container[1]->c==c ) {
+              return container[1];
+          }
+            
+          if(c<container[1]->c){
+                if(container[0] && container[0]->c !=c){
+                    return container[0]->links[c];
                 }
-            }
-        }
-        return keys;
-    }
-    std::vector<Key> get_suffix_list(const Key& prefix){
-        std::vector<Key> keys;
-        for(auto& suff:get_suffix_list(findNode(prefix))){
-            keys.push_back(suff);
-        }
-        return keys;
-    }
-    TrieNode* findNode(const Key& prefix){
-        auto currentNode=root.get();
-        Key currentKey=prefix;
-        while(currentNode && !currentKey.empty()){
-            if(currentNode->contains(currentKey[0])){
-                currentNode=(*currentNode)[currentKey[0]].get();
-                currentKey=currentKey.substr(1);
-            }else{
-                return nullptr;
-            }
-        }
-        return currentNode;
+                return container[0];
+            
+          }
+          if(container[2] && container[2]->c !=c){
+              return container[2]->links[c];
+          }
+          return container[2];
+         
+          
+       }
+       auto begin(){
+           return container.begin();
+       }
+       auto end(){
+           return container.end();
+       }
+       
+   };
+  
+   template<typename T>
+   struct ArrayContainer:std::array<T,26>{
+       using Base=std::array<T,26>;
+       void initialize(){}
+       T& operator[](char c){
+          return Base::operator[](c-'a');
+       }
+       
+   };
 
-    }
-    Value find(const Key& key){
-        auto currentNode=root.get();
-        Key currentKey=key;
-        while(currentNode && !currentKey.empty()){
-            if(currentNode->contains(currentKey[0])){
-                currentNode=(*currentNode)[currentKey[0]].get();
-                currentKey=currentKey.substr(1);
-            }else{
-                return Value{};
-            }
-        }
-        if(currentNode){
-            return currentNode->value;
-        }
-        return Value{};
-    }
-    NodePtr root{std::make_unique<TrieNode>(TrieNode{{},Value{},' '})};
-};
+ template<typename Key,typename Value>
+ using Trie=TrieImpl<Key,Value, ArrayContainer>;
+ template<typename Key,typename Value>
+ using TernaryTrie=TrieImpl<Key,Value, TernaryContainer>;
+
 }
 
 #endif // TRIE_HPP

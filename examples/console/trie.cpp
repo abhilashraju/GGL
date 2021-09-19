@@ -22,19 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include "trie.hpp"
-using namespace GGL;
-int main (){
-    Trie myTrie;
-    myTrie.insert("hello","john");
-    myTrie.insert("hi","john");
-    myTrie.insert("t","abhi");
-    myTrie.insert("histor","I am");
-    myTrie.insert("he","I am");
-    // myTrie.print();
 
-    std::cout<<myTrie.find("t")<<"\n";
-    auto suflist=myTrie.get_starts_with("hi");
-    for(auto& s:suflist){
-        std::cout<<s <<"  ";
+int main (){
+    using namespace GGL;
+    TernaryTrie<std::string,std::string> trie;
+    trie.insert("abhilash","swiss");
+    trie.insert("abhila","rus");
+    trie.insert("pranav","ken");
+    trie.insert("shreya","man");
+    trie.insert("shreyakutty","uga");
+    trie.print(std::cout);
+    std::cout<<trie.get("abhilash")<<" ";
+    std::cout<<trie.get("pranav")<<"\n";
+    for(auto v: trie.keys()){
+            std::cout<<" "<<v<<" ";
+    }
+    for(auto v: trie.suffixes("p")){
+            std::cout<<" "<<v<<" ";
     }
 }

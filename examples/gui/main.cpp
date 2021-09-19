@@ -34,11 +34,11 @@ int main(int argc, char **argv)
 
 //    MetrixGraphsUI graph;
 //    MstGraph graph;
-//    GraphUi graph;
+    GraphUi graph;
 //      SpGraph graph;
 //    Plane graph;
 //    SortView graph;
-    BinTree graph;
+//    BinTree graph;
     graph.show();
 
     return app.exec();
